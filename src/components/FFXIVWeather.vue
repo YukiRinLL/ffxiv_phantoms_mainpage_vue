@@ -67,18 +67,20 @@
 </template>
 
 <script>
+import { WEATHER_CONFIG, TIME_FORMATS } from '@/config/constants'
 import Weather from '@/assets/js/ffxiv-weather.js';
 
 export default {
   data() {
     return {
-      regions: [],
+      regions: WEATHER_CONFIG.REGIONS,
       selectedRegion: 0,
       currentLocations: [],
       selectedLocation: '',
       currentWeather: null,
       weatherForecast: [],
-      weather: new Weather()
+      weather: new Weather(),
+      isLoading: false
     };
   },
   mounted() {
@@ -98,39 +100,42 @@ export default {
         this.selectedLocation = this.currentLocations[0];
       }
     },
-    getWeather() {
+    async getWeather() {
       if (!this.selectedLocation) return;
 
-      // Get current weather
-      const now = Date.now();
-      const current = this.weather.getWeather(this.selectedLocation, now);
+      this.isLoading = true;
+      try {
+        // Get current weather
+        const now = Date.now();
+        const current = this.weather.getWeather(this.selectedLocation, now);
 
-      this.currentWeather = {
-        name: current,
-        icon: current,
-        timestamp: now
-      };
+        this.currentWeather = {
+          name: current,
+          icon: current.toLowerCase().replace(/\s+/g, '-'), // 标准化图标类名
+          timestamp: now
+        };
 
-      // Get forecast (next 5 weather changes)
-      this.weatherForecast = [];
-      let forecastTime = now;
-
-      for (let i = 0; i < 5; i++) {
-        forecastTime += 8 * 175000; // 8 Eorzean hours (1 weather cycle)
-        const weather = this.weather.getWeather(this.selectedLocation, forecastTime);
-
-        this.weatherForecast.push({
-          name: weather,
-          icon: weather,
-          timestamp: forecastTime
+        this.weatherForecast = Array.from({length: 5}, (_, i) => {
+          const time = now + (i + 1) * WEATHER_CONFIG.WEATHER_CYCLE_DURATION;
+          const weather = this.weather.getWeather(this.selectedLocation, time);
+          return {
+            name: weather,
+            icon: weather.toLowerCase().replace(/\s+/g, '-'),
+            timestamp: time
+          };
         });
+      } finally {
+        this.isLoading = false;
       }
     },
     formatTime(timestamp) {
-      const date = new Date(timestamp);
-      const eorzea = this.weather.getEorzeanTimes(timestamp);
+      const date = new Date(timestamp)
+      const eorzea = this.weather.getEorzeanTimes(timestamp)
 
-      return `${date.toLocaleString()} (ET ${eorzea[1]}:${eorzea[0].toString().padStart(2, '0')})`;
+      return `${date.toLocaleString(undefined, TIME_FORMATS.local)} (ET ${eorzea[1]}:${eorzea[0].toString().padStart(2, '0')})`
+    },
+    getWeatherIcon(weatherName) {
+      return WEATHER_CONFIG.WEATHER_ICONS[weatherName] || 'weather-unknown'
     }
   }
 };

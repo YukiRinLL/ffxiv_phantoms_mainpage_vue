@@ -1,6 +1,7 @@
 # ffxiv_phantoms_mainpage_vue
 
-## Project setup
+## Please use npm exclusively
+### Project setup
 ```
 npm install
 ```
