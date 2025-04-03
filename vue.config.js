@@ -1,7 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
-module.exports = {
+module.exports = defineConfig({
   transpileDependencies: [],
   publicPath: process.env.NODE_ENV === 'production'
       ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
@@ -25,32 +25,21 @@ module.exports = {
       // chunkFormat: 'array-push'
       // 移除了 chunkFormat 属性，添加其他有效的 output 配置
       filename: '[name].js',
-      chunkFilename: '[name].chunk.js'
-    }
+      chunkFilename: '[name].chunk.js',
+      // 明确指定 chunk 格式
+      chunkFormat: 'array-push' // 或者 'commonjs' 根据你的需求
+    },
+    // 添加目标环境配置
+    target: ['web', 'es5'] // 明确指定目标环境
   },
   chainWebpack: config => {
-    // 明确配置 html-webpack-plugin
-    config.plugin('html').tap(args => {
-      return [{
-        ...args[0],
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          keepClosingSlash: true,
-          minifyJS: true,
-          minifyCSS: true,
-          minifyURLs: true
-        }
-      }]
-    })
-    // 添加大小写敏感插件
-    config.plugin('case-sensitive-paths')
-        .use(CaseSensitivePathsPlugin)
-  },
-
-}
+    config.plugin('html').tap(args => [{
+      ...args[0],
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      }
+    }])
+  }
+})

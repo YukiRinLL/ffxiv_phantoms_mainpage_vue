@@ -13,7 +13,7 @@ module.exports = {
     ecmaVersion: 2021,
     parser: '@babel/eslint-parser',
     sourceType: 'module',
-    requireConfigFile: true
+    requireConfigFile: false
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
