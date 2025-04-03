@@ -1,8 +1,8 @@
 const { defineConfig } = require('@vue/cli-service')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
-module.exports = defineConfig({
-  transpileDependencies: false,
+module.exports = {
+  transpileDependencies: [],
   publicPath: process.env.NODE_ENV === 'production'
       ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
       : '/',
@@ -19,10 +19,13 @@ module.exports = defineConfig({
   },
   configureWebpack: {
     plugins: [
-      new (require('case-sensitive-paths-webpack-plugin'))()
+      new CaseSensitivePathsPlugin()
     ],
     output: {
-      chunkFormat: 'array-push'
+      // chunkFormat: 'array-push'
+      // 移除了 chunkFormat 属性，添加其他有效的 output 配置
+      filename: '[name].js',
+      chunkFilename: '[name].chunk.js'
     }
   },
   chainWebpack: config => {
@@ -50,4 +53,4 @@ module.exports = defineConfig({
         .use(CaseSensitivePathsPlugin)
   },
 
-})
+}
