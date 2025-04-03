@@ -1,25 +1,47 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from '@/views/Home.vue'    // 主页
-import FFXIVWeather from '@/views/FFXIVWeather.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { routeConfig } from './config'
 
-Vue.use(Router)
+const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: routeConfig,
 
-export default new Router({
-    routes: [
-        {
-            path: '/',          // 根路径
-            redirect: '/home'   // 自动跳转到/home
-        },
-        {
-            path: '/home',      // 主页路径
-            name: 'Home',
-            component: Home
-        },
-        {
-            path: '/weather',   // 天气页路径
-            name: 'FFXIVWeather',
-            component: FFXIVWeather
-        }
-    ]
+    // 统一路由行为配置
+    scrollBehavior(to, from, savedPosition) {
+        return savedPosition || { top: 0 }
+    }
 })
+
+// 全局路由守卫
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title ? `${to.meta.title} | FFXIV` : 'FFXIV'
+    next()
+})
+
+export default router
+
+
+export const routeConfig = [
+    {
+        path: '/',
+        redirect: '/home',
+        meta: { hidden: true }
+    },
+    {
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/views/Home.vue'),
+        meta: {
+            title: '首页',
+            icon: 'home'
+        }
+    },
+    {
+        path: '/weather',
+        name: 'FFXIVWeather',
+        component: () => import('@/views/FFXIVWeather.vue'),
+        meta: {
+            title: '天气系统',
+            icon: 'weather'
+        }
+    }
+]

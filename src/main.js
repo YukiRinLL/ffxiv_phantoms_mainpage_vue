@@ -1,8 +1,13 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router' // 路由配置
+import router from './router'
+import store from './store'
 
-new Vue({
-    router, // 注入路由
-    render: h => h(App)
-}).$mount('#app')
+const app = createApp(App)
+
+// 统一注册路由和状态管理
+app.use(router)
+app.use(store)
+
+app.mount('#app')
+setupRouterGuards(router)

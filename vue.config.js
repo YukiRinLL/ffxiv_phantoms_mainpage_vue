@@ -2,7 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 module.exports = defineConfig({
-  transpileDependencies: [],
+  transpileDependencies: false,
   publicPath: process.env.NODE_ENV === 'production'
       ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
       : '/',
@@ -19,7 +19,35 @@ module.exports = defineConfig({
   },
   configureWebpack: {
     plugins: [
-      new CaseSensitivePathsPlugin()
-    ]
-  }
+      new (require('case-sensitive-paths-webpack-plugin'))()
+    ],
+    output: {
+      chunkFormat: 'array-push'
+    }
+  },
+  chainWebpack: config => {
+    // 明确配置 html-webpack-plugin
+    config.plugin('html').tap(args => {
+      return [{
+        ...args[0],
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true
+        }
+      }]
+    })
+    // 添加大小写敏感插件
+    config.plugin('case-sensitive-paths')
+        .use(CaseSensitivePathsPlugin)
+  },
+
 })
