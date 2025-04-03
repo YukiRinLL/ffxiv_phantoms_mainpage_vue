@@ -1,4 +1,0 @@
-# .eslintignore
-src/assets/js/ffxiv-weather.js
-public/*
-dist/*
