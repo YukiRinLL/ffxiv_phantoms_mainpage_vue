@@ -1,13 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
-import store from './store'
+import router from './router/index' // 确保路径正确
+import { setupRouterGuards } from './router/guards' // 确保路径正确
 
 const app = createApp(App)
 
-// 统一注册路由和状态管理
-app.use(router)
-app.use(store)
-
-app.mount('#app')
+// 在 main.js 中调用 setupRouterGuards
 setupRouterGuards(router)
+
+app.use(router).mount('#app')

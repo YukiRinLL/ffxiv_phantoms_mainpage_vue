@@ -7,7 +7,7 @@ module.exports = {
   extends: [
     'plugin:vue/essential',
     'eslint:recommended',
-    '@vue/prettier'
+    'prettier'
   ],
   parserOptions: {
     ecmaVersion: 2021,
@@ -21,5 +21,8 @@ module.exports = {
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'vue/multi-word-component-names': 'off',
     'vue/no-setup-props-destructure': 'off'
+  },
+  globals: {
+    responseData: 'readonly'
   }
 }

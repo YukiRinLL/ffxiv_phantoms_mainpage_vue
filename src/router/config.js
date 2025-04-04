@@ -7,11 +7,19 @@ export const routeConfig = [
     {
         path: '/home',
         name: 'Home',
-        component: () => import('@/views/Home.vue')
+        component: () => import('@/views/Home.vue'),
+        meta: {
+            title: 'Home',
+            icon: 'home'
+        }
     },
     {
         path: '/weather',
         name: 'Weather',
-        component: () => import('@/views/FFXIVWeather.vue')
+        component: () => import('@/views/FFXIVWeather.vue'),
+        meta: {
+            title: 'Weather',
+            icon: 'weather'
+        }
     }
-]
+];

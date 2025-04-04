@@ -1,3 +1,5 @@
+import store from "@/store";
+
 export function setupRouterGuards(router) {
     router.beforeResolve(async (to) => {
         if (to.meta.requiresAuth) {

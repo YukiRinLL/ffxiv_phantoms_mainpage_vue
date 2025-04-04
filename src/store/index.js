@@ -1,8 +1,9 @@
-import { createStore } from 'vuex'
-import newModule from './modules/newModule'
+import { createRouter, createWebHistory } from 'vue-router'
+import { routeConfig } from '@/router/config'
 
-export default createStore({
-    modules: {
-        newModule
-    }
+const router = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes: routeConfig
 })
+
+export default router

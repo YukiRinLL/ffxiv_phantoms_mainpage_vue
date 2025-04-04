@@ -1,3 +1,5 @@
+import router from "@/store";
+
 export function setupDynamicRoutes(permissions) {
     const dynamicRoutes = generateRoutesBasedOnPermissions(permissions)
     dynamicRoutes.forEach(route => {

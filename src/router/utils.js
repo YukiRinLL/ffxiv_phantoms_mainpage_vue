@@ -1,3 +1,5 @@
+import router from "@/store";
+
 export const findRouteByPath = (path) => {
     return router.getRoutes().find(r => r.path === path)
 }
