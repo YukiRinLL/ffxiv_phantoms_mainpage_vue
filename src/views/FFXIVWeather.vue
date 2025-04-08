@@ -104,10 +104,12 @@ export default {
         }
       }
     },
+
     startClock() {
       this.updateClock()
       this.timeInterval = setInterval(this.updateClock, 1000)
     },
+
     updateClock() {
       const now = new Date()
       this.localTime = now.toLocaleTimeString([], TIME_FORMATS.local)
@@ -118,56 +120,92 @@ export default {
       const eorzeaMinutes = Math.floor((now.getTime() / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
       this.eorzeaTime = `${eorzeaHours.toString().padStart(2, '0')}:${eorzeaMinutes.toString().padStart(2, '0')}`
     },
-    async getWeather() {
-      if (!this.selectedLocation) return
 
-      this.isLoading = true
+    getWeather() {
+      if (!this.selectedLocation) return;
+
+      console.log(`Getting weather for: ${this.selectedLocation}`);
+      this.isLoading = true;
+
       try {
-        const now = Date.now()
-
-        // In a real implementation, you would call your weather calculation logic here
-        // This is a mock implementation for demonstration
-        const weatherTypes = Object.keys(WEATHER_CONFIG.WEATHER_ICONS)
-        const currentWeatherName = this.calculateWeather(this.selectedLocation, now)
+        const now = Date.now();
+        const weather = this.calculateWeather(this.selectedLocation, now);
+        console.log(`Calculated weather: ${weather}`);
 
         this.currentWeather = {
-          name: currentWeatherName,
+          name: weather,
           timestamp: now
-        }
+        };
 
-        // Generate forecast for next 5 weather cycles (8 ET hours each)
+        // 生成预报
         this.weatherForecast = Array.from({ length: 5 }, (_, i) => {
-          const forecastTime = now + (i + 1) * WEATHER_CONFIG.WEATHER_CYCLE_DURATION
-          const forecastWeather = this.calculateWeather(this.selectedLocation, forecastTime)
+          const forecastTime = now + (i + 1) * WEATHER_CONFIG.WEATHER_CYCLE_DURATION;
+          const forecastWeather = this.calculateWeather(this.selectedLocation, forecastTime);
           return {
             name: forecastWeather,
             timestamp: forecastTime
-          }
-        })
+          };
+        });
       } catch (error) {
-        console.error('Error getting weather:', error)
+        console.error('Error getting weather:', error);
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
     },
+
     calculateWeather(location, timestamp) {
-      // This should be replaced with actual FFXIV weather calculation logic
-      // For now, we'll return a random weather for demonstration
-      const weatherTypes = Object.keys(WEATHER_CONFIG.WEATHER_ICONS)
-      return weatherTypes[Math.floor(Math.random() * weatherTypes.length)]
+      const mappedLocation = this.getMappedLocation(location);
+      const rates = WEATHER_CONFIG.WEATHER_RATES[mappedLocation];
+
+      if (!rates || !Array.isArray(rates)) {
+        console.error(`No weather rates found for location: ${location} (mapped to: ${mappedLocation})`);
+        return 'Unknown';
+      }
+
+      timestamp = Math.abs(timestamp || Date.now());
+
+      const bell = Math.floor(timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000));
+      const increment = (Math.floor(bell / 8) * 8) % 24;
+      const totalDays = Math.floor(timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000 * 24));
+      const calcBase = totalDays * 100 + increment;
+
+      // 计算天气种子
+      let step1 = (calcBase << 11) ^ calcBase;
+      step1 >>>= 0;  // 转换为无符号整数
+      let step2 = (step1 >>> 8) ^ step1;
+      step2 >>>= 0;  // 转换为无符号整数
+      const weatherSeed = step2 % 100;
+
+      // 查找匹配的天气
+      for (let i = 0; ; i++) {
+        const rateIndex = 2 * i + 1;
+        if (rateIndex >= rates.length) break;
+        if (weatherSeed < rates[rateIndex]) {
+          return rates[2 * i];
+        }
+      }
+      return rates[rates.length - 1];
     },
+
+    getMappedLocation(location) {
+      const mapped = WEATHER_CONFIG.LOCATION_MAPPING[location] || location;
+      return WEATHER_CONFIG.WEATHER_RATES[mapped] ? mapped : location;
+    },
+
+    getWeatherIconUrl(weatherName) {
+      return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.url || ''
+    },
+
+    getWeatherClass(weatherName) {
+      return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.class || 'weather-unknown'
+    },
+
     formatTime(timestamp) {
       const date = new Date(timestamp)
       const eorzeaHours = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 24)
       const eorzeaMinutes = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
 
       return `${date.toLocaleString([], TIME_FORMATS.local)} (ET ${eorzeaHours}:${eorzeaMinutes.toString().padStart(2, '0')})`
-    },
-    getWeatherIconUrl(weatherName) {
-      return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.url || ''
-    },
-    getWeatherClass(weatherName) {
-      return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.class || 'weather-unknown'
     }
   }
 }
