@@ -38,25 +38,82 @@ export const WEATHER_CONFIG = {
 
     // 天气图标映射
     WEATHER_ICONS: {
-        "碧空": "weather-fair",
-        "晴朗": "weather-clear",
-        "阴云": "weather-clouds",
-        "薄雾": "weather-fog",
-        "小雨": "weather-rain",
-        "暴雨": "weather-showers",
-        "微风": "weather-wind",
-        "强风": "weather-gales",
-        "打雷": "weather-thunder",
-        "雷雨": "weather-thunderstorms",
-        "扬沙": "weather-dust-storms",
-        "热浪": "weather-heat-waves",
-        "小雪": "weather-snow",
-        "暴雪": "weather-blizzards",
-        "妖雾": "weather-umbral-wind",
-        "灵电": "weather-umbral-static",
-        "灵风": "weather-umbral-dynamic",
-        "月尘": "weather-moon-dust",
-        "磁暴": "weather-astromagnetic-storm"
+        "碧空": {
+            class: "weather-fair",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/f/f6/060201.png"
+        },
+        "晴朗": {
+            class: "weather-clear",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/d/de/060202.png"
+        },
+        "阴云": {
+            class: "weather-clouds",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/3/33/060203.png"
+        },
+        "薄雾": {
+            class: "weather-fog",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/6/63/060204.png"
+        },
+        "微风": {
+            class: "weather-wind",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/6/6c/060205.png"
+        },
+        "强风": {
+            class: "weather-gales",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/1/19/060206.png"
+        },
+        "小雨": {
+            class: "weather-rain",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/9/9a/060207.png"
+        },
+        "暴雨": {
+            class: "weather-showers",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/9/96/060208.png"
+        },
+        "打雷": {
+            class: "weather-thunder",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/d/d5/060209.png"
+        },
+        "雷雨": {
+            class: "weather-thunderstorms",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/d/db/060210.png"
+        },
+        "扬沙": {
+            class: "weather-dust-storms",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/3/32/060211.png"
+        },
+        "热浪": {
+            class: "weather-heat-waves",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/6/6c/060214.png"
+        },
+        "小雪": {
+            class: "weather-snow",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/6/6e/060215.png"
+        },
+        "暴雪": {
+            class: "weather-blizzards",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/9/9a/060216.png"
+        },
+        "妖雾": {
+            class: "weather-umbral-wind",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/2/21/060218.png"
+        },
+        "灵电": {
+            class: "weather-umbral-static",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/2/23/060220.png"
+        },
+        "灵风": {
+            class: "weather-umbral-dynamic",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/1/19/060219.png"
+        },
+        "月尘": {
+            class: "weather-moon-dust",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/8/89/060222.png"
+        },
+        "磁暴": {
+            class: "weather-astromagnetic-storm",
+            url: "https://huiji-public.huijistatic.com/ff14/uploads/c/ca/060223.png"
+        }
     }
 }
 
@@ -71,5 +128,11 @@ export const TIME_FORMATS = {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false
+    },
+    server: {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'UTC'
     }
 }
