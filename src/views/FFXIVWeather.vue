@@ -96,7 +96,30 @@ export default {
     clearInterval(this.timeInterval)
   },
   methods: {
-    // ... keep other methods the same until getWeather ...
+    updateLocations() {
+      if (this.regions[this.selectedRegion]) {
+        this.currentLocations = this.regions[this.selectedRegion].locations
+        if (this.currentLocations.length > 0) {
+          this.selectedLocation = this.currentLocations[0]
+        }
+      }
+    },
+
+    startClock() {
+      this.updateClock()
+      this.timeInterval = setInterval(this.updateClock, 1000)
+    },
+
+    updateClock() {
+      const now = new Date()
+      this.localTime = now.toLocaleTimeString([], TIME_FORMATS.local)
+      this.serverTime = now.toLocaleTimeString([], TIME_FORMATS.server)
+
+      // Calculate Eorzean time
+      const eorzeaHours = Math.floor((now.getTime() / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 24)
+      const eorzeaMinutes = Math.floor((now.getTime() / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
+      this.eorzeaTime = `${eorzeaHours.toString().padStart(2, '0')}:${eorzeaMinutes.toString().padStart(2, '0')}`
+    },
 
     getWeather() {
       if (!this.selectedLocation) return
@@ -152,16 +175,192 @@ export default {
       return rates[rates.length - 1]
     },
 
-    // Helper to get mapped location name
     getMappedLocation(location) {
       return WEATHER_CONFIG.LOCATION_MAPPING[location] || location
     },
+
     getWeatherIconUrl(weatherName) {
       return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.url || ''
     },
+
     getWeatherClass(weatherName) {
       return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.class || 'weather-unknown'
+    },
+
+    formatTime(timestamp) {
+      const date = new Date(timestamp)
+      const eorzeaHours = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 24)
+      const eorzeaMinutes = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
+
+      return `${date.toLocaleString([], TIME_FORMATS.local)} (ET ${eorzeaHours}:${eorzeaMinutes.toString().padStart(2, '0')})`
     }
   }
 }
 </script>
+
+
+<style scoped>
+.weather-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+.controls {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-display {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #e9ecef;
+  border-radius: 6px;
+  font-size: 0.95em;
+}
+
+.clock {
+  text-align: center;
+}
+
+.clock span {
+  font-weight: bold;
+  display: block;
+  font-size: 1.1em;
+  color: #495057;
+}
+
+.location-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.location-selector label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.location-selector select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  background: white;
+  min-width: 180px;
+}
+
+.location-selector button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background: #4e9af1;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.location-selector button:hover {
+  background: #3a8ae4;
+}
+
+.location-selector button:disabled {
+  background: #b0c4de;
+  cursor: not-allowed;
+}
+
+.weather-display {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.current-weather {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.weather-info {
+  flex: 1;
+}
+
+.weather-info p {
+  margin: 8px 0;
+  font-size: 1.05em;
+}
+
+.forecast {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.forecast-item {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.forecast-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-info {
+  margin-top: 10px;
+}
+
+.forecast-info p {
+  margin: 5px 0;
+  font-size: 0.95em;
+}
+
+.forecast-time {
+  color: #6c757d;
+  font-size: 0.85em !important;
+}
+
+.weather-help {
+  text-align: center;
+  padding: 30px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .time-display {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .location-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .forecast {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
