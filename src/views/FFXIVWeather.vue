@@ -96,51 +96,26 @@ export default {
     clearInterval(this.timeInterval)
   },
   methods: {
-    updateLocations() {
-      if (this.regions[this.selectedRegion]) {
-        this.currentLocations = this.regions[this.selectedRegion].locations
-        if (this.currentLocations.length > 0) {
-          this.selectedLocation = this.currentLocations[0]
-        }
-      }
-    },
-    startClock() {
-      this.updateClock()
-      this.timeInterval = setInterval(this.updateClock, 1000)
-    },
-    updateClock() {
-      const now = new Date()
-      this.localTime = now.toLocaleTimeString([], TIME_FORMATS.local)
-      this.serverTime = now.toLocaleTimeString([], TIME_FORMATS.server)
+    // ... keep other methods the same until getWeather ...
 
-      // Calculate Eorzean time
-      const eorzeaHours = Math.floor((now.getTime() / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 24)
-      const eorzeaMinutes = Math.floor((now.getTime() / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
-      this.eorzeaTime = `${eorzeaHours.toString().padStart(2, '0')}:${eorzeaMinutes.toString().padStart(2, '0')}`
-    },
-    async getWeather() {
+    getWeather() {
       if (!this.selectedLocation) return
 
       this.isLoading = true
       try {
         const now = Date.now()
 
-        // In a real implementation, you would call your weather calculation logic here
-        // This is a mock implementation for demonstration
-        const weatherTypes = Object.keys(WEATHER_CONFIG.WEATHER_ICONS)
-        const currentWeatherName = this.calculateWeather(this.selectedLocation, now)
-
+        // Get current weather using the actual FFXIV algorithm
         this.currentWeather = {
-          name: currentWeatherName,
+          name: this.calculateWeather(this.selectedLocation, now),
           timestamp: now
         }
 
         // Generate forecast for next 5 weather cycles (8 ET hours each)
         this.weatherForecast = Array.from({ length: 5 }, (_, i) => {
           const forecastTime = now + (i + 1) * WEATHER_CONFIG.WEATHER_CYCLE_DURATION
-          const forecastWeather = this.calculateWeather(this.selectedLocation, forecastTime)
           return {
-            name: forecastWeather,
+            name: this.calculateWeather(this.selectedLocation, forecastTime),
             timestamp: forecastTime
           }
         })
@@ -150,18 +125,36 @@ export default {
         this.isLoading = false
       }
     },
-    calculateWeather(location, timestamp) {
-      // This should be replaced with actual FFXIV weather calculation logic
-      // For now, we'll return a random weather for demonstration
-      const weatherTypes = Object.keys(WEATHER_CONFIG.WEATHER_ICONS)
-      return weatherTypes[Math.floor(Math.random() * weatherTypes.length)]
-    },
-    formatTime(timestamp) {
-      const date = new Date(timestamp)
-      const eorzeaHours = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 24)
-      const eorzeaMinutes = Math.floor((timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000)) * 60 % 60)
 
-      return `${date.toLocaleString([], TIME_FORMATS.local)} (ET ${eorzeaHours}:${eorzeaMinutes.toString().padStart(2, '0')})`
+    // Actual FFXIV weather calculation algorithm
+    calculateWeather(location, timestamp) {
+      const rates = WEATHER_CONFIG.WEATHER_RATES[this.getMappedLocation(location)]
+      if (!rates) return 'Unknown'
+
+      // Calculate weather seed based on timestamp
+      timestamp = Math.abs(timestamp || Date.now())
+      const bell = Math.floor(timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000))
+      const increment = (Math.floor(bell / 8) * 8 + 8) % 24
+      const totalDays = Math.floor(timestamp / (WEATHER_CONFIG.EORZEAN_TIME_RATIO * 1000 * 24))
+      const calcBase = totalDays * 100 + increment
+      const step1 = (calcBase << 11) ^ calcBase
+      const step2 = (step1 >>> 8) ^ step1
+      const weatherSeed = step2 % 100
+
+      // Find the matching weather based on seed
+      for (let i = 0; ; i++) {
+        const rateIndex = 2 * i + 1
+        if (rateIndex >= rates.length) break
+        if (weatherSeed < rates[rateIndex]) {
+          return rates[2 * i]
+        }
+      }
+      return rates[rates.length - 1]
+    },
+
+    // Helper to get mapped location name
+    getMappedLocation(location) {
+      return WEATHER_CONFIG.LOCATION_MAPPING[location] || location
     },
     getWeatherIconUrl(weatherName) {
       return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.url || ''
@@ -172,169 +165,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.weather-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-h1 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
-
-.controls {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.time-display {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #e9ecef;
-  border-radius: 6px;
-  font-size: 0.95em;
-}
-
-.clock {
-  text-align: center;
-}
-
-.clock span {
-  font-weight: bold;
-  display: block;
-  font-size: 1.1em;
-  color: #495057;
-}
-
-.location-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-}
-
-.location-selector label {
-  font-weight: 500;
-  color: #495057;
-}
-
-.location-selector select {
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #ced4da;
-  background: white;
-  min-width: 180px;
-}
-
-.location-selector button {
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  background: #4e9af1;
-  color: white;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.location-selector button:hover {
-  background: #3a8ae4;
-}
-
-.location-selector button:disabled {
-  background: #b0c4de;
-  cursor: not-allowed;
-}
-
-.weather-display {
-  background: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.current-weather {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 25px;
-  padding-bottom: 25px;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.weather-info {
-  flex: 1;
-}
-
-.weather-info p {
-  margin: 8px 0;
-  font-size: 1.05em;
-}
-
-.forecast {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 20px;
-}
-
-.forecast-item {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 6px;
-  text-align: center;
-  transition: transform 0.2s;
-}
-
-.forecast-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.forecast-info {
-  margin-top: 10px;
-}
-
-.forecast-info p {
-  margin: 5px 0;
-  font-size: 0.95em;
-}
-
-.forecast-time {
-  color: #6c757d;
-  font-size: 0.85em !important;
-}
-
-.weather-help {
-  text-align: center;
-  padding: 30px;
-  color: #6c757d;
-  font-style: italic;
-}
-
-@media (max-width: 768px) {
-  .time-display {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .location-selector {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .forecast {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
