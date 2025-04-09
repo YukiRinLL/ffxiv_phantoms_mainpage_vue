@@ -10,7 +10,7 @@ module.exports = defineConfig({
   publicPath: '/',
 
   outputDir: 'dist', // 默认构建目录（需与 Render 的 Publish Directory 一致）
-  filenameHashing: true, // 为资源添加哈希
+  filenameHashing: false, // 为资源添加哈希
   devServer: {
     client: {
       webSocketURL: {
