@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { WEATHER_CONFIG, TIME_FORMATS } from '@/config/constants'
+import { WEATHER_CONFIG, TIME_FORMATS } from '@/config/FFXIVWeather-constants'
 
 export default {
   data() {
