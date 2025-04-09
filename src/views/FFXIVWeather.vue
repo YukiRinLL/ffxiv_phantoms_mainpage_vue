@@ -193,7 +193,11 @@ export default {
     },
 
     getWeatherIconUrl(weatherName) {
-      return WEATHER_CONFIG.WEATHER_ICONS[weatherName]?.url || ''
+      const icon = WEATHER_CONFIG.WEATHER_ICONS[weatherName];
+      if (!icon) return '';
+
+      // 尝试使用 HTTPS，如果失败则回退到本地或占位图
+      return icon.url.replace('http://', 'https://') || '/fallback-icon.png';
     },
 
     getWeatherClass(weatherName) {
