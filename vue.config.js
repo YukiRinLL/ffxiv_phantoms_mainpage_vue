@@ -4,9 +4,10 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 module.exports = defineConfig({
   transpileDependencies: [],
 
-  publicPath: process.env.NODE_ENV === 'production'
-      ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
-      : '/',
+  // publicPath: process.env.NODE_ENV === 'production'
+  //     ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
+  //     : '/',
+  publicPath: '/',
 
   outputDir: 'dist', // 默认构建目录（需与 Render 的 Publish Directory 一致）
   filenameHashing: true, // 为资源添加哈希
