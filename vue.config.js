@@ -6,6 +6,7 @@ module.exports = defineConfig({
   publicPath: process.env.NODE_ENV === 'production'
       ? '/ffxiv_phantoms_mainpage_vue/'  // 仓库名
       : '/',
+  outputDir: 'dist', // 默认构建目录（需与 Render 的 Publish Directory 一致）
   devServer: {
     client: {
       webSocketURL: {
