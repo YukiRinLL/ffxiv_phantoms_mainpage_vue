@@ -29,10 +29,10 @@
     <!-- 最新公告 -->
     <div class="announcements">
       <h2>Latest News</h2>
-      <div class="news-item">
-        <h3>Patch 6.5 Updates</h3>
-        <p>Explore new content in the latest patch!</p>
-        <span class="date">2023-10-03</span>
+      <div class="news-item" v-for="item in announcements" :key="item.title">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.content }}</p>
+        <span class="date">{{ item.date }}</span>
       </div>
     </div>
   </div>
@@ -50,9 +50,9 @@ export default {
           date: '2023-10-03'
         }
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>
