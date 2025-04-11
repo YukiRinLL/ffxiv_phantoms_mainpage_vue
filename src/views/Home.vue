@@ -2,7 +2,7 @@
   <div class="home">
     <!-- 顶部横幅 -->
     <div class="banner">
-      <img src="@/assets/logo.png" alt="FFXIV Phantoms" class="logo">
+      <img src="@/assets/images/LOGO-LETTER.png" alt="FFXIV Phantoms" class="logo">
       <h1>Welcome to FFXIV Phantoms</h1>
       <p>Your companion for Eorzean adventures</p>
     </div>
