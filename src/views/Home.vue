@@ -17,6 +17,14 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
+      <router-link to="/send-email" class="card">
+        <div class="card-icon">
+          <i class="xiv email-icon"></i>
+        </div>
+        <h3>Send Test Email</h3>
+        <p>Send a test email to any recipient</p>
+      </router-link>
+
       <div class="card coming-soon">
         <div class="card-icon">
           <i class="xiv item-minion-chs"></i>
@@ -97,11 +105,6 @@ export default {
 .weather-card {
   background: linear-gradient(135deg, #6e8efb, #a777e3);
   color: white;
-}
-
-.coming-soon {
-  background: #f5f5f5;
-  border: 1px dashed #ccc;
 }
 
 .card:hover {
