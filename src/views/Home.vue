@@ -17,12 +17,12 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
-      <router-link to="/send-email" class="card">
+      <router-link to="/email-operations" class="card">
         <div class="card-icon">
           <i class="xiv email-icon"></i>
         </div>
-        <h3>Send Test Email</h3>
-        <p>Send a test email to any recipient</p>
+        <h3>Email Operations</h3>
+        <p>Send various types of emails</p>
       </router-link>
 
       <div class="card coming-soon">

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import FFXIVWeather from '@/views/FFXIVWeather.vue';
-import SendEmail from '@/views/SendEmail.vue'; // 直接导入 SendEmail 组件
+import EmailOperations from '@/views/EmailOperations.vue'; // 新增 EmailOperations 组件
 
 export const routeConfig = [
     {
@@ -28,12 +28,12 @@ export const routeConfig = [
         }
     },
     {
-        path: '/send-email',
-        name: 'SendEmail',
-        component: SendEmail,
+        path: '/email-operations',
+        name: 'EmailOperations',
+        component: EmailOperations,
         meta: {
-            title: 'SendEmail',
-            icon: 'send-email'
+            title: 'EmailOperations',
+            icon: 'email-operations'
         }
     }
 ];
