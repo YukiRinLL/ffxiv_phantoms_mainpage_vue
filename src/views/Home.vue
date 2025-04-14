@@ -25,6 +25,22 @@
         <p>Send various types of emails</p>
       </router-link>
 
+      <router-link to="/user-management" class="card">
+        <div class="card-icon">
+          <i class="xiv user-icon"></i>
+        </div>
+        <h3>User Management</h3>
+        <p>Manage users and their details</p>
+      </router-link>
+
+      <router-link to="/message-management" class="card">
+        <div class="card-icon">
+          <i class="xiv message-icon"></i>
+        </div>
+        <h3>Message Management</h3>
+        <p>View and manage messages</p>
+      </router-link>
+
       <div class="card coming-soon">
         <div class="card-icon">
           <i class="xiv item-minion-chs"></i>

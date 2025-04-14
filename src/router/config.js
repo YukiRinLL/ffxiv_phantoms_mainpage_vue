@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import FFXIVWeather from '@/views/FFXIVWeather.vue';
-import EmailOperations from '@/views/EmailOperations.vue'; // 新增 EmailOperations 组件
+import EmailOperations from '@/views/EmailOperations.vue';
+import UserManagement from '@/views/UserManagement.vue';
+import MessageManagement from '@/views/MessageManagement.vue';
 
 export const routeConfig = [
     {
@@ -34,6 +36,24 @@ export const routeConfig = [
         meta: {
             title: 'EmailOperations',
             icon: 'email-operations'
+        }
+    },
+    {
+        path: '/user-management',
+        name: 'UserManagement',
+        component: UserManagement,
+        meta: {
+            title: 'UserManagement',
+            icon: 'user-management'
+        }
+    },
+    {
+        path: '/message-management',
+        name: 'MessageManagement',
+        component: MessageManagement,
+        meta: {
+            title: 'MessageManagement',
+            icon: 'message-management'
         }
     }
 ];
