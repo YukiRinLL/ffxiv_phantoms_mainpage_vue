@@ -3,9 +3,13 @@
     <h1>File Management</h1>
     <div class="file-list">
       <div v-for="item in files" :key="item.name" class="file-item">
-        <div class="file-info">
+        <div class="file-info" @click="openItem(item)">
           <i :class="item.type === 'folder' ? 'folder-icon' : 'file-icon'"></i>
           <span>{{ item.originalName }}</span>
+        </div>
+        <div class="file-details" v-if="item.type === 'file'">
+          <span>Size: {{ item.size }} bytes</span>
+          <span>Modified: {{ item.modified }}</span>
         </div>
         <div class="file-actions">
           <button @click="deleteItem(item)">Delete</button>
@@ -50,7 +54,10 @@ export default {
           .filter(file => file.name && typeof file.name === 'string') // 过滤掉无效的文件名
           .map(file => ({
             ...file,
-            originalName: this.decodeFileName(file.name)
+            originalName: this.decodeFileName(file.name),
+            size: file.metadata.size, // 添加文件大小
+            modified: file.updated_at, // 添加文件修改日期
+            type: file.name.endsWith('/') ? 'folder' : 'file' // 判断是文件夹还是文件
           }));
       }
     },
@@ -69,48 +76,40 @@ export default {
       await this.listFiles();
     },
     processFileName(fileName) {
-      // 替换特殊字符为下划线
       const cleanedFileName = fileName
         .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
         .replace(/\s+/g, '_') // 替换空格为下划线
         .substring(0, 255); // 控制文件名长度不超过 255 个字符
 
-      // 获取文件扩展名
       const extension = fileName.split('.').pop() || 'txt';
-
-      // 对文件名（不包括扩展名）进行 Base64 编码
       const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
 
-      // 最终文件名格式：cleanedFileName__BASE64__base64FileName.extension
       const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
-
       return finalFileName;
     },
     decodeFileName(encodedName) {
       if (!encodedName || typeof encodedName !== 'string') {
         console.error('Invalid encoded name:', encodedName);
-        return ''; // 返回空字符串或其他默认值
+        return '';
       }
       const parts = encodedName.split('__BASE64__');
       if (parts.length !== 2) {
         console.error('Invalid encoded name format:', encodedName);
-        return encodedName; // 如果格式不正确，直接返回原始值
+        return encodedName;
       }
-      const base64Part = parts[1].split('.')[0]; // 获取 Base64 编码部分
-
-      // 解码 Base64 部分
+      const base64Part = parts[1].split('.')[0];
       const decodedBase64 = atob(base64Part);
-
-      // 将解码后的字符串转换回原始字符串
       const originalName = decodeURIComponent(escape(decodedBase64));
-
       return originalName;
     },
     async createFolder() {
       const folderName = prompt('Enter folder name:');
       if (folderName) {
         const processedFolderName = this.processFileName(folderName);
-        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
+        const folderPath = `${this.currentPath}${processedFolderName}/`;
+        const { error } = await supabase.storage.from('files').upload(folderPath, new Blob(), {
+          contentType: 'application/x-directory' // 确保上传的是一个目录
+        });
         if (error) {
           console.error('Error creating folder:', error);
         } else {
@@ -147,6 +146,12 @@ export default {
       } else {
         await this.listFiles();
       }
+    },
+    openItem(item) {
+      if (item.type === 'folder') {
+        this.currentPath = `${this.currentPath}${item.name}`;
+        this.listFiles();
+      }
     }
   }
 };
@@ -157,11 +162,15 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .file-list {
   list-style: none;
   padding: 0;
+  margin-bottom: 20px;
 }
 
 .file-item {
@@ -170,6 +179,11 @@ export default {
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.file-item:hover {
+  background-color: #f0f0f0;
 }
 
 .file-info {
@@ -179,6 +193,17 @@ export default {
 
 .file-icon {
   margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.folder-icon {
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.file-details {
+  font-size: 0.9em;
+  color: #666;
 }
 
 .file-actions {
@@ -189,5 +214,17 @@ export default {
 button {
   padding: 5px 10px;
   cursor: pointer;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #389466;
+}
+
+button:active {
+  background-color: #2c7a59;
 }
 </style>
