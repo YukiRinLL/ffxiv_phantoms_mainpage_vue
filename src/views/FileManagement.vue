@@ -15,7 +15,8 @@
     </div>
     <div class="file-actions">
       <button @click="uploadFiles">Upload Files</button>
-      <button @click="createFolder">Create Folder</button>
+      <!-- <button @click="createFolder">Create Folder</button> -->
+       <!--TODO 文件夹新建功能还没有完成，文件夹和文件在列表中无法区分，搁置-->
       <button @click="deleteSelected">Delete Selected</button>
     </div>
     <input type="file" ref="fileInput" multiple style="display: none" @change="handleFileChange" />
