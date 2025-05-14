@@ -4,6 +4,7 @@ import FFXIVWeather from '@/views/FFXIVWeather.vue';
 import EmailOperations from '@/views/EmailOperations.vue';
 import UserManagement from '@/views/UserManagement.vue';
 import MessageManagement from '@/views/MessageManagement.vue';
+import FileManagement from '@/views/FileManagement.vue';
 
 export const routeConfig = [
     {
@@ -54,6 +55,15 @@ export const routeConfig = [
         meta: {
             title: 'MessageManagement',
             icon: 'message-management'
+        }
+    },
+    {
+        path: '/file-management',
+        name: 'FileManagement',
+        component: FileManagement,
+        meta: {
+            title: 'FileManagement',
+            icon: 'file-management'
         }
     }
 ];
