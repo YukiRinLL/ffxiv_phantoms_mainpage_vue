@@ -20,8 +20,7 @@
     </div>
     <div class="file-actions">
       <button @click="uploadFiles">Upload Files</button>
-      <!-- <button @click="createFolder">Create Folder</button> -->
-       <!--TODO 文件夹新建功能还没有完成，文件夹和文件在列表中无法区分，搁置-->
+      <button @click="createFolder">Create Folder</button>
       <button @click="deleteSelected">Delete Selected</button>
     </div>
     <input type="file" ref="fileInput" multiple style="display: none" @change="handleFileChange" />
@@ -84,15 +83,10 @@ export default {
         .replace(/\s+/g, '_') // 替换空格为下划线
         .substring(0, 255); // 控制文件名长度不超过 255 个字符
 
-      // 获取文件扩展名
       const extension = fileName.split('.').pop() || 'txt';
-
-      // 对文件名（不包括扩展名）进行 Base64 编码
       const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
 
-      // 最终文件名格式：cleanedFileName__BASE64__base64FileName.extension
       const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
-
       return finalFileName;
     },
     decodeFileName(encodedName) {
@@ -107,10 +101,7 @@ export default {
       }
       const base64Part = parts[1].split('.')[0]; // 获取 Base64 编码部分
 
-      // 解码 Base64 部分
       const decodedBase64 = atob(base64Part);
-
-      // 将解码后的字符串转换回原始字符串
       const originalName = decodeURIComponent(escape(decodedBase64));
 
       return originalName;
@@ -118,7 +109,7 @@ export default {
     async createFolder() {
       const folderName = prompt('Enter folder name:');
       if (folderName) {
-        const processedFolderName = this.processFileName(folderName);
+        const processedFolderName = this.processFolderName(folderName);
         const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
         if (error) {
           console.error('Error creating folder:', error);
@@ -126,6 +117,15 @@ export default {
           await this.listFiles();
         }
       }
+    },
+    processFolderName(folderName) {
+      // 替换特殊字符为下划线
+      const cleanedFolderName = folderName
+        .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
+        .replace(/\s+/g, '_') // 替换空格为下划线
+        .substring(0, 255); // 控制文件夹名称长度不超过 255 个字符
+
+      return `${cleanedFolderName}/`;
     },
     async deleteItem(item) {
       const { error } = await supabase.storage.from('files').remove([`${this.currentPath}${item.name}`]);
@@ -135,15 +135,15 @@ export default {
         await this.listFiles();
       }
     },
-    async downloadFile(fileName) {
-      const { data, error } = await supabase.storage.from('files').download(`${this.currentPath}${fileName}`);
+    async downloadFile(encodedName, originalName) {
+      const { data, error } = await supabase.storage.from('files').download(`${this.currentPath}${encodedName}`);
       if (error) {
         console.error('Error downloading file:', error);
       } else {
         const url = URL.createObjectURL(data);
         const a = document.createElement('a');
         a.href = url;
-        a.download = fileName;
+        a.download = originalName; // 使用原始文件名
         a.click();
         URL.revokeObjectURL(url);
       }
@@ -155,6 +155,12 @@ export default {
         console.error('Error deleting selected files:', error);
       } else {
         await this.listFiles();
+      }
+    },
+    openItem(item) {
+      if (item.type === 'folder') {
+        this.currentPath = `${this.currentPath}${item.name}`;
+        this.listFiles();
       }
     }
   }
