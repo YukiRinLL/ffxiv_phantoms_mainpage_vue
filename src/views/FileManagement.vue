@@ -5,7 +5,7 @@
       <div v-for="item in files" :key="item.name" class="file-item">
         <div class="file-info">
           <i :class="item.type === 'folder' ? 'folder-icon' : 'file-icon'"></i>
-          <span>{{ item.name }}</span>
+          <span>{{ item.originalName }}</span>
         </div>
         <div class="file-actions">
           <button @click="deleteItem(item)">Delete</button>
@@ -46,7 +46,12 @@ export default {
       if (error) {
         console.error('Error fetching files:', error);
       } else {
-        this.files = data || [];
+        this.files = data
+          .filter(file => file.name && typeof file.name === 'string') // 过滤掉无效的文件名
+          .map(file => ({
+            ...file,
+            originalName: this.decodeFileName(file.name)
+          }));
       }
     },
     async uploadFiles() {
@@ -55,25 +60,57 @@ export default {
     async handleFileChange(event) {
       const files = event.target.files;
       for (const file of files) {
-        const cleanedFileName = this.cleanFileName(file.name);
-        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${cleanedFileName}`, file);
+        const processedFileName = this.processFileName(file.name);
+        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFileName}`, file);
         if (error) {
           console.error('Error uploading file:', error);
         }
       }
       await this.listFiles();
     },
-    cleanFileName(fileName) {
-      // Replace illegal characters with underscores
-      return fileName
-        .replace(/[^a-zA-Z0-9._-]/g, '_')
-        .replace(/^[. ]+|[ .]+$/g, '_');
+    processFileName(fileName) {
+      // 替换特殊字符为下划线
+      const cleanedFileName = fileName
+        .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
+        .replace(/\s+/g, '_') // 替换空格为下划线
+        .substring(0, 255); // 控制文件名长度不超过 255 个字符
+
+      // 获取文件扩展名
+      const extension = fileName.split('.').pop() || 'txt';
+
+      // 对文件名（不包括扩展名）进行 Base64 编码
+      const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
+
+      // 最终文件名格式：cleanedFileName__BASE64__base64FileName.extension
+      const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
+
+      return finalFileName;
+    },
+    decodeFileName(encodedName) {
+      if (!encodedName || typeof encodedName !== 'string') {
+        console.error('Invalid encoded name:', encodedName);
+        return ''; // 返回空字符串或其他默认值
+      }
+      const parts = encodedName.split('__BASE64__');
+      if (parts.length !== 2) {
+        console.error('Invalid encoded name format:', encodedName);
+        return encodedName; // 如果格式不正确，直接返回原始值
+      }
+      const base64Part = parts[1].split('.')[0]; // 获取 Base64 编码部分
+
+      // 解码 Base64 部分
+      const decodedBase64 = atob(base64Part);
+
+      // 将解码后的字符串转换回原始字符串
+      const originalName = decodeURIComponent(escape(decodedBase64));
+
+      return originalName;
     },
     async createFolder() {
       const folderName = prompt('Enter folder name:');
       if (folderName) {
-        const cleanedFolderName = this.cleanFileName(folderName);
-        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${cleanedFolderName}/`, new Blob());
+        const processedFolderName = this.processFileName(folderName);
+        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
         if (error) {
           console.error('Error creating folder:', error);
         } else {
