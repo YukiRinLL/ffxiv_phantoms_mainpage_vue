@@ -5,6 +5,12 @@ import { setupRouterGuards } from './router/guards';
 import axios from 'axios';
 import CloudflareAnalytics from './plugins/cloudflare-analytics';
 
+//import { library } from '@fortawesome/fontawesome-svg-core';
+//import { faHome, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+//library.add(faHome, faInfoCircle);
+//app.component('font-awesome-icon', FontAwesomeIcon);
+
 // 创建 Vue 应用实例
 const app = createApp(App);
 
