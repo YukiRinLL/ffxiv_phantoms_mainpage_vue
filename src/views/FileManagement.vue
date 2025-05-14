@@ -3,13 +3,18 @@
     <h1>File Management</h1>
     <div class="file-list">
       <div v-for="item in files" :key="item.name" class="file-item">
-        <div class="file-info">
+        <div class="file-info" @click="openItem(item)">
           <i :class="item.type === 'folder' ? 'folder-icon' : 'file-icon'"></i>
           <span>{{ item.originalName }}</span>
         </div>
+        <div class="file-details" v-if="item.type === 'file'">
+          <span>Size: {{ item.size }} bytes</span>
+          <span>Modified: {{ item.modified }}</span>
+          <span>Type: {{ item.type }}</span>
+        </div>
         <div class="file-actions">
           <button @click="deleteItem(item)">Delete</button>
-          <button v-if="item.type === 'file'" @click="downloadFile(item.name)">Download</button>
+          <button v-if="item.type === 'file'" @click="downloadFile(item.name, item.originalName)">Download</button>
         </div>
       </div>
     </div>
@@ -51,7 +56,10 @@ export default {
           .filter(file => file.name && typeof file.name === 'string') // 过滤掉无效的文件名
           .map(file => ({
             ...file,
-            originalName: this.decodeFileName(file.name)
+            originalName: this.decodeFileName(file.name),
+            size: file.metadata.size, // 添加文件大小
+            modified: file.updated_at, // 添加文件修改日期
+            type: file.name.endsWith('/') ? 'folder' : 'file' // 判断是文件夹还是文件
           }));
       }
     },
@@ -158,11 +166,15 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .file-list {
   list-style: none;
   padding: 0;
+  margin-bottom: 20px;
 }
 
 .file-item {
@@ -171,6 +183,11 @@ export default {
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.file-item:hover {
+  background-color: #f0f0f0;
 }
 
 .file-info {
@@ -180,6 +197,17 @@ export default {
 
 .file-icon {
   margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.folder-icon {
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.file-details {
+  font-size: 0.9em;
+  color: #666;
 }
 
 .file-actions {
@@ -190,5 +218,17 @@ export default {
 button {
   padding: 5px 10px;
   cursor: pointer;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #389466;
+}
+
+button:active {
+  background-color: #2c7a59;
 }
 </style>
