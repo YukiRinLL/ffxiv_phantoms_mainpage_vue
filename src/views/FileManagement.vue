@@ -75,38 +75,61 @@ export default {
       }
       await this.listFiles();
     },
-    processFileName(fileName) {
-      const cleanedFileName = fileName
-        .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
-        .replace(/\s+/g, '_') // 替换空格为下划线
-        .substring(0, 255); // 控制文件名长度不超过 255 个字符
+    processFileName(fileName, isFolder = false) {
+      // if (isFolder) {
+      //   // 如果是文件夹，直接返回文件夹名称（确保以 / 结尾）
+      //   return fileName.endsWith('/') ? fileName : `${fileName}/`;
+      // }
 
-      const extension = fileName.split('.').pop() || 'txt';
-      const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
+      // // 如果是文件，进行 Base64 编码
+      // const cleanedFileName = fileName
+      //   .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
+      //   .replace(/\s+/g, '_') // 替换空格为下划线
+      //   .substring(0, 255); // 控制文件名长度不超过 255 个字符
 
-      const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
-      return finalFileName;
+      // const extension = fileName.split('.').pop() || 'txt';
+      // const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
+
+      // const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
+      // return finalFileName;
+
+      return fileName.replace(/[^a-zA-Z0-9._-]/g, '_'); // 仅替换特殊字符
     },
     decodeFileName(encodedName) {
-      if (!encodedName || typeof encodedName !== 'string') {
-        console.error('Invalid encoded name:', encodedName);
-        return '';
-      }
-      const parts = encodedName.split('__BASE64__');
-      if (parts.length !== 2) {
-        console.error('Invalid encoded name format:', encodedName);
-        return encodedName;
-      }
-      const base64Part = parts[1].split('.')[0];
-      const decodedBase64 = atob(base64Part);
-      const originalName = decodeURIComponent(escape(decodedBase64));
-      return originalName;
+      // if (!encodedName || typeof encodedName !== 'string') {
+      //   console.error('Invalid encoded name:', encodedName);
+      //   return ''; // 返回空字符串或其他默认值
+      // }
+
+      // // 检查是否是文件夹
+      // const isFolder = encodedName.endsWith('/');
+
+      // if (isFolder) {
+      //   // 如果是文件夹，直接返回文件夹名称
+      //   return encodedName;
+      // }
+
+      // const parts = encodedName.split('__BASE64__');
+      // if (parts.length !== 2) {
+      //   console.error('Invalid encoded name format:', encodedName);
+      //   return encodedName; // 如果格式不正确，直接返回原始值
+      // }
+      // const base64Part = parts[1].split('.')[0]; // 获取 Base64 编码部分
+
+      // // 解码 Base64 部分
+      // const decodedBase64 = atob(base64Part);
+
+      // // 将解码后的字符串转换回原始字符串
+      // const originalName = decodeURIComponent(escape(decodedBase64));
+
+      // return originalName;
+      return encodedName.replace(/_/g, ' '); // 仅替换下划线为原始字符
     },
     async createFolder() {
       const folderName = prompt('Enter folder name:');
       if (folderName) {
-        const processedFolderName = this.processFileName(folderName);
-        const folderPath = `${this.currentPath}${processedFolderName}/`;
+        const processedFolderName = this.processFileName(folderName, true); // 调用 processFileName 方法，指定 isFolder 为 true
+        const folderPath = `${this.currentPath}${processedFolderName}`;
         const { error } = await supabase.storage.from('files').upload(folderPath, new Blob(), {
           contentType: 'application/x-directory' // 确保上传的是一个目录
         });
