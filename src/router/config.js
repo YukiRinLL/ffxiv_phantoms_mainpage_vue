@@ -30,33 +30,33 @@ export const routeConfig = [
             icon: 'weather'
         }
     },
-    {
-        path: '/email-operations',
-        name: 'EmailOperations',
-        component: EmailOperations,
-        meta: {
-            title: 'EmailOperations',
-            icon: 'email-operations'
-        }
-    },
-    {
-        path: '/user-management',
-        name: 'UserManagement',
-        component: UserManagement,
-        meta: {
-            title: 'UserManagement',
-            icon: 'user-management'
-        }
-    },
-    {
-        path: '/message-management',
-        name: 'MessageManagement',
-        component: MessageManagement,
-        meta: {
-            title: 'MessageManagement',
-            icon: 'message-management'
-        }
-    },
+    // {
+    //     path: '/email-operations',
+    //     name: 'EmailOperations',
+    //     component: EmailOperations,
+    //     meta: {
+    //         title: 'EmailOperations',
+    //         icon: 'email-operations'
+    //     }
+    // },
+    // {
+    //     path: '/user-management',
+    //     name: 'UserManagement',
+    //     component: UserManagement,
+    //     meta: {
+    //         title: 'UserManagement',
+    //         icon: 'user-management'
+    //     }
+    // },
+    // {
+    //     path: '/message-management',
+    //     name: 'MessageManagement',
+    //     component: MessageManagement,
+    //     meta: {
+    //         title: 'MessageManagement',
+    //         icon: 'message-management'
+    //     }
+    // },
     {
         path: '/file-management',
         name: 'FileManagement',

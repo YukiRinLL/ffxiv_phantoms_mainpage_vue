@@ -20,6 +20,7 @@
 
 <script>
 import { mainMenu } from '@/config/menu'
+import '@/assets/styles/global.css'
 
 export default {
   computed: {
@@ -67,7 +68,7 @@ export default {
 }
 
 .nav-item.active {
-  background-color: #42b983;
+  background-color: #a7a7a7;
 }
 
 .icon {

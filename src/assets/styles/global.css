@@ -1,0 +1,88 @@
+/* Global Styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.button {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #bababa;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #999999;
+}
+
+.button:active {
+  background-color: #797979;
+}
+
+.card {
+  padding: 25px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  text-align: center;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background-color: #f0f0f0;
+}
+
+.list-item-info {
+  display: flex;
+  align-items: center;
+}
+
+.list-item-icon {
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.list-item-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 10px;
+}

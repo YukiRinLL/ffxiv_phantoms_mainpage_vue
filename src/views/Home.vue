@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home container">
     <!-- 顶部横幅 -->
     <div class="banner">
       <img src="@/assets/images/LOGO-LETTER.png" alt="FFXIV Phantoms" class="logo">
@@ -17,28 +17,12 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
-      <router-link to="/email-operations" class="card">
+      <router-link to="/file-management" class="card">
         <div class="card-icon">
-          <i class="xiv email-icon"></i>
+          <i class="xiv file-icon"></i>
         </div>
-        <h3>Email Operations</h3>
-        <p>Send various types of emails</p>
-      </router-link>
-
-      <router-link to="/user-management" class="card">
-        <div class="card-icon">
-          <i class="xiv user-icon"></i>
-        </div>
-        <h3>User Management</h3>
-        <p>Manage users and their details</p>
-      </router-link>
-
-      <router-link to="/message-management" class="card">
-        <div class="card-icon">
-          <i class="xiv message-icon"></i>
-        </div>
-        <h3>Message Management</h3>
-        <p>View and manage messages</p>
+        <h3>File Management</h3>
+        <p>Manage files and folders</p>
       </router-link>
 
       <div class="card coming-soon">
@@ -87,18 +71,23 @@ export default {
 }
 
 .banner {
+  position: relative;
   text-align: center;
   padding: 40px 20px;
   margin-bottom: 40px;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-  url('@/assets/logo.png');
-  background-size: cover;
-  color: white;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+  url('@/assets/images/logo -no tital.jpg');
+  background-size: auto 100%; /* 宽高设置*/
+  background-position: center; /* 图片居中显示 */
+  background-repeat: no-repeat; /* 图片不重复 */
+  height: 200px; /* 设置容器高度 */
   border-radius: 8px;
+  color: #333;
 }
 
 .banner .logo {
   height: 80px;
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 
@@ -119,7 +108,7 @@ export default {
 }
 
 .weather-card {
-  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  background: linear-gradient(135deg, #4f4f4f, #2e2e2e);
   color: white;
 }
 

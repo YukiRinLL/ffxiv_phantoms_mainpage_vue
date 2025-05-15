@@ -1,18 +1,18 @@
 <template>
-  <div class="file-management">
+  <div class="file-management container">
     <h1>File Management</h1>
     <div class="file-list">
-      <div v-for="item in files" :key="item.name" class="file-item">
-        <div class="file-info" @click="openItem(item)">
+      <div v-for="item in files" :key="item.name" class="list-item">
+        <div class="list-item-info" @click="openItem(item)">
           <i :class="item.type === 'folder' ? 'folder-icon' : 'file-icon'"></i>
           <span>{{ item.originalName }}</span>
         </div>
-        <div class="file-details" v-if="item.type === 'file'">
+        <div class="list-item-details" v-if="item.type === 'file'">
           <span>Size: {{ item.size }} bytes</span>
           <span>Modified: {{ item.modified }}</span>
           <span>Type: {{ item.type }}</span>
         </div>
-        <div class="file-actions">
+        <div class="list-item-actions">
           <button @click="deleteItem(item)">Delete</button>
           <button v-if="item.type === 'file'" @click="downloadFile(item.name, item.originalName)">Download</button>
         </div>
@@ -224,17 +224,18 @@ export default {
 button {
   padding: 5px 10px;
   cursor: pointer;
-  background-color: #42b983;
+  background-color: #bababa;
   color: white;
   border: none;
   border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #389466;
+  background-color: #999999;
 }
 
 button:active {
-  background-color: #2c7a59;
+  background-color: #797979;
 }
 </style>
