@@ -3,8 +3,8 @@
     <!-- 顶部横幅 -->
     <div class="banner">
       <img src="@/assets/images/LOGO-LETTER.png" alt="FFXIV Phantoms" class="logo">
-      <h1>Welcome to FFXIV Phantoms</h1>
-      <p>Your companion for Eorzean adventures</p>
+      <h1>Welcome to Phantoms' Sphere</h1>
+      <p>FFXIV Freecompany and Cross-world Linkshell</p>
     </div>
 
     <!-- 主要功能导航 -->
@@ -38,8 +38,11 @@
     <div class="announcements">
       <h2>Latest News</h2>
       <div class="news-item" v-for="item in announcements" :key="item.title">
+        
         <h3>{{ item.title }}</h3>
-        <p>{{ item.content }}</p>
+        <div class="news-content">
+          <p>{{ item.content }}</p>
+        </div>
         <span class="date">{{ item.date }}</span>
       </div>
     </div>
@@ -53,9 +56,35 @@ export default {
     return {
       announcements: [
         {
-          title: 'Patch 6.5 Updates',
-          content: 'Explore new content in the latest patch!',
-          date: '2023-10-03'
+          title: '部队主页维护完成',
+          content: '[目前维护的FC主页地址]\n'
+          +'ffxiv-phantoms-main-page.vercel.app\n'
+          +'ffxiv-phantoms-mainpage.onrender.com\n'
+          +'ffxiv-phantoms-mainpage.pages.dev\n'
+          +'yukirinll.github.io/FFXIV_Phantoms_MainPage\n'
+
+          +'[停用的地址]\n'
+          +'yukirinll.gitee.io/ffxiv_phantoms_mainpage\n'
+          +'由于网络运营商和地区原因，不一定都访问迅速',
+          date: '2025-04-03'
+        },
+        {
+          title: 'Wallpaper Engine 壁纸文件已上传 Steam 创意工坊',
+          content: '[链接]\n'
+          +'https://steamcommunity.com/sharedfiles/filedetails/?id=3272715540\n'
+          +'https://steamcommunity.com/sharedfiles/filedetails/?id=3272725659',
+          date: '2024-10-14'
+        },
+        {
+          title: '语音频道施工完成',
+          content: '新的语音频道：\n       https://oopz.cn/i/9XgUt9\n'
+          +'原来的仍然在用：\n       https://kook.vip/MnyX2V',
+          date: '2024-07-17'
+        },
+        {
+          title: '聊天机器人 FFXIVbot 已部署',
+          content: 'FFXIVbot 已部署，TX管控原因Image和hso指令已关闭。部分定制化功能（獭逃、占卜、抽卡）未开放。',
+          date: '2022-10-18'
         }
       ]
     };
@@ -75,8 +104,10 @@ export default {
   text-align: center;
   padding: 40px 20px;
   margin-bottom: 40px;
-  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-  url('@/assets/images/logo -no tital.jpg');
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(220, 220, 220, 0.5)),
+    url('@/assets/images/logo -no tital.jpg'),
+    rgba(255, 255, 255, 1);
   background-size: auto 100%; /* 宽高设置*/
   background-position: center; /* 图片居中显示 */
   background-repeat: no-repeat; /* 图片不重复 */
@@ -135,6 +166,14 @@ export default {
 
 .news-item:last-child {
   border-bottom: none;
+}
+
+.news-content {
+  white-space: pre-wrap; /* 保留换行符 */
+  display: inline-block; /* 使容器宽度适应内容 */
+  text-align: left; /* 内容左对齐 */
+  max-width: 80%; /* 限制最大宽度，可根据需要调整 */
+  margin: 0 auto; /* 水平居中 */
 }
 
 .date {
