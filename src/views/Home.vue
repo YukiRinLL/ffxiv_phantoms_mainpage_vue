@@ -46,6 +46,14 @@
         <span class="date">{{ item.date }}</span>
       </div>
     </div>
+
+    <!-- 返回主页面按钮 -->
+    <div class="form-button-wrapper">
+      <button id="mainpage-button" class="btn-black" @click="redirectToMainPage" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain; opacity: 0.7;">
+        <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Go to Main Page</p>
+      </button>
+    </div>
+    
   </div>
 </template>
 
@@ -88,6 +96,26 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    redirectToMainPage() {
+      const currentUrl = window.location.href;
+      let targetUrl;
+
+      if (currentUrl.includes('vercel.app')) {
+        targetUrl = 'ffxiv-phantoms-main-page.vercel.app';
+      } else if (currentUrl.includes('onrender.com')) {
+        targetUrl = 'ffxiv-phantoms-mainpage.onrender.com';
+      } else if (currentUrl.includes('pages.dev')) {
+        targetUrl = 'ffxiv-phantoms-mainpage.pages.dev';
+      } else if (currentUrl.includes('github.io')) {
+        targetUrl = 'yukirinll.github.io/FFXIV_Phantoms_MainPage';
+      } else {
+        targetUrl = 'ffxiv-phantoms-mainpage.onrender.com'; // 默认跳转地址
+      }
+
+      window.location.href = targetUrl;
+    }
   }
 };
 </script>
@@ -181,6 +209,27 @@ export default {
   color: #666;
   font-size: 0.9em;
   margin-top: 5px;
+}
+
+.form-button-wrapper {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#mainpage-button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#mainpage-button:hover {
+  background-color: #333;
+  transform: scale(1.05);
 }
 
 /* 响应式调整 */
