@@ -13,17 +13,29 @@
           <span>Type: {{ item.type }}</span>
         </div>
         <div class="list-item-actions">
-          <button @click="deleteItem(item)">Delete</button>
+          <!-- 删除按钮仅在文件类型时显示 -->
+          <button v-if="item.type === 'file'" @click="deleteItem(item)">Delete</button>
           <button v-if="item.type === 'file'" @click="downloadFile(item.name, item.originalName)">Download</button>
         </div>
       </div>
     </div>
     <div class="file-actions">
+      <button>Go Back</button>
+      <button>Upload Files</button>
+      <button>Create Folder</button>
+      <button>Delete Selected</button>
+      <!-- <button @click="goBack">Go Back</button>
       <button @click="uploadFiles">Upload Files</button>
       <button @click="createFolder">Create Folder</button>
-      <button @click="deleteSelected">Delete Selected</button>
+      <button @click="deleteSelected">Delete Selected</button> -->
     </div>
     <input type="file" ref="fileInput" multiple style="display: none" @change="handleFileChange" />
+    <!-- 遮罩层 -->
+    <div v-if="isLoading" class="overlay">
+      <div class="overlay-content">
+        <p>Loading...</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -35,7 +47,9 @@ export default {
     return {
       files: [],
       selectedFiles: [],
-      currentPath: ''
+      currentPath: '',
+      isLoading: false, // 控制遮罩层的显示
+      timeoutId: null, // 用于存储超时的定时器ID
     };
   },
   async created() {
@@ -43,23 +57,36 @@ export default {
   },
   methods: {
     async listFiles() {
-      const { data, error } = await supabase.storage.from('files').list(this.currentPath, {
-        limit: 100,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' }
-      });
-      if (error) {
+      this.isLoading = true; // 显示遮罩层
+      this.timeoutId = setTimeout(() => {
+        this.isLoading = false; // 如果超时，隐藏遮罩层
+        alert('Request timed out. Please try again later.');
+      }, 5000); // 设置超时时间为5秒
+
+      try {
+        const { data, error } = await supabase.storage.from('files').list(this.currentPath, {
+          limit: 100,
+          offset: 0,
+          sortBy: { column: 'name', order: 'asc' }
+        });
+        clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+        this.isLoading = false; // 隐藏遮罩层
+        if (error) {
+          console.error('Error fetching files:', error);
+        } else {
+          this.files = data
+            .filter(file => file.name !== '.emptyFolderPlaceholder') // 过滤掉空文件夹占位文件
+            .map(file => ({
+              name: file.name,
+              originalName: this.decodeFileName(file.name),
+              size: file.metadata ? file.metadata.size : null, // 文件大小
+              modified: file.updated_at, // 文件修改日期
+              type: file.metadata ? 'file' : 'folder' // 根据metadata判断是文件还是文件夹
+            }));
+        }
+      } catch (error) {
+        this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error fetching files:', error);
-      } else {
-        this.files = data
-          .filter(file => file.name && typeof file.name === 'string') // 过滤掉无效的文件名
-          .map(file => ({
-            ...file,
-            originalName: this.decodeFileName(file.name),
-            size: file.metadata.size, // 添加文件大小
-            modified: file.updated_at, // 添加文件修改日期
-            type: file.name.endsWith('/') ? 'folder' : 'file' // 判断是文件夹还是文件
-          }));
       }
     },
     async uploadFiles() {
@@ -67,39 +94,50 @@ export default {
     },
     async handleFileChange(event) {
       const files = event.target.files;
-      for (const file of files) {
-        const processedFileName = this.processFileName(file.name);
-        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFileName}`, file);
-        if (error) {
-          console.error('Error uploading file:', error);
+      this.isLoading = true; // 显示遮罩层
+      this.timeoutId = setTimeout(() => {
+        this.isLoading = false; // 如果超时，隐藏遮罩层
+        // alert('Request timed out. Please try again later.');
+      }, 5000); // 设置超时时间为5秒
+
+      try {
+        for (const file of files) {
+          const processedFileName = this.processFileName(file.name);
+          const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFileName}`, file);
+          if (error) {
+            console.error('Error uploading file:', error);
+          }
         }
+        clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+        this.isLoading = false; // 隐藏遮罩层
+        await this.listFiles();
+      } catch (error) {
+        this.isLoading = false; // 如果请求失败，隐藏遮罩层
+        console.error('Error uploading files:', error);
       }
-      await this.listFiles();
     },
     processFileName(fileName) {
-      // 替换特殊字符为下划线
       const cleanedFileName = fileName
         .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
         .replace(/\s+/g, '_') // 替换空格为下划线
         .substring(0, 255); // 控制文件名长度不超过 255 个字符
 
-      const extension = fileName.split('.').pop() || 'txt';
+      const extension = fileName.split('.').pop() || '';
       const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
 
-      const finalFileName = `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
-      return finalFileName;
+      return `${cleanedFileName}__BASE64__${base64FileName}.${extension}`;
     },
     decodeFileName(encodedName) {
       if (!encodedName || typeof encodedName !== 'string') {
         console.error('Invalid encoded name:', encodedName);
-        return ''; // 返回空字符串或其他默认值
+        return '';
       }
       const parts = encodedName.split('__BASE64__');
       if (parts.length !== 2) {
         console.error('Invalid encoded name format:', encodedName);
-        return encodedName; // 如果格式不正确，直接返回原始值
+        return encodedName;
       }
-      const base64Part = parts[1].split('.')[0]; // 获取 Base64 编码部分
+      const base64Part = parts[1].split('.')[0];
 
       const decodedBase64 = atob(base64Part);
       const originalName = decodeURIComponent(escape(decodedBase64));
@@ -109,57 +147,111 @@ export default {
     async createFolder() {
       const folderName = prompt('Enter folder name:');
       if (folderName) {
-        const processedFolderName = this.processFolderName(folderName);
-        const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
-        if (error) {
+        const processedFolderName = this.processFileName(folderName);
+        this.isLoading = true; // 显示遮罩层
+        this.timeoutId = setTimeout(() => {
+          this.isLoading = false; // 如果超时，隐藏遮罩层
+          alert('Request timed out. Please try again later.');
+        }, 5000); // 设置超时时间为5秒
+
+        try {
+          const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
+          clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+          this.isLoading = false; // 隐藏遮罩层
+          if (error) {
+            console.error('Error creating folder:', error);
+          } else {
+            await this.listFiles();
+          }
+        } catch (error) {
+          this.isLoading = false; // 如果请求失败，隐藏遮罩层
           console.error('Error creating folder:', error);
-        } else {
-          await this.listFiles();
         }
       }
     },
-    processFolderName(folderName) {
-      // 替换特殊字符为下划线
-      const cleanedFolderName = folderName
-        .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
-        .replace(/\s+/g, '_') // 替换空格为下划线
-        .substring(0, 255); // 控制文件夹名称长度不超过 255 个字符
-
-      return `${cleanedFolderName}/`;
-    },
     async deleteItem(item) {
-      const { error } = await supabase.storage.from('files').remove([`${this.currentPath}${item.name}`]);
-      if (error) {
+      this.isLoading = true; // 显示遮罩层
+      this.timeoutId = setTimeout(() => {
+        this.isLoading = false; // 如果超时，隐藏遮罩层
+        alert('Request timed out. Please try again later.');
+      }, 5000); // 设置超时时间为5秒
+
+      try {
+        const { error } = await supabase.storage.from('files').remove([`${this.currentPath}${item.name}`]);
+        clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+        this.isLoading = false; // 隐藏遮罩层
+        if (error) {
+          console.error('Error deleting item:', error);
+        } else {
+          await this.listFiles();
+        }
+      } catch (error) {
+        this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error deleting item:', error);
-      } else {
-        await this.listFiles();
       }
     },
     async downloadFile(encodedName, originalName) {
-      const { data, error } = await supabase.storage.from('files').download(`${this.currentPath}${encodedName}`);
-      if (error) {
+      this.isLoading = true; // 显示遮罩层
+      this.timeoutId = setTimeout(() => {
+        this.isLoading = false; // 如果超时，隐藏遮罩层
+        alert('Request timed out. Please try again later.');
+      }, 5000); // 设置超时时间为5秒
+
+      try {
+        const { data, error } = await supabase.storage.from('files').download(`${this.currentPath}${encodedName}`);
+        clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+        this.isLoading = false; // 隐藏遮罩层
+        if (error) {
+          console.error('Error downloading file:', error);
+        } else {
+          const url = URL.createObjectURL(data);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = originalName;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      } catch (error) {
+        this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error downloading file:', error);
-      } else {
-        const url = URL.createObjectURL(data);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = originalName; // 使用原始文件名
-        a.click();
-        URL.revokeObjectURL(url);
       }
     },
     async deleteSelected() {
       const selectedPaths = this.selectedFiles.map(file => `${this.currentPath}${file.name}`);
-      const { error } = await supabase.storage.from('files').remove(selectedPaths);
-      if (error) {
+      this.isLoading = true; // 显示遮罩层
+      this.timeoutId = setTimeout(() => {
+        this.isLoading = false; // 如果超时，隐藏遮罩层
+        alert('Request timed out. Please try again later.');
+      }, 5000); // 设置超时时间为5秒
+
+      try {
+        const { error } = await supabase.storage.from('files').remove(selectedPaths);
+        clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
+        this.isLoading = false; // 隐藏遮罩层
+        if (error) {
+          console.error('Error deleting selected files:', error);
+        } else {
+          await this.listFiles();
+        }
+      } catch (error) {
+        this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error deleting selected files:', error);
-      } else {
-        await this.listFiles();
       }
     },
     openItem(item) {
       if (item.type === 'folder') {
-        this.currentPath = `${this.currentPath}${item.name}`;
+        this.currentPath = `${this.currentPath}${item.name}/`;
+        this.listFiles();
+      }
+    },
+    goBack() {
+      if (this.currentPath !== '') {
+        this.currentPath = this.currentPath.substring(0, this.currentPath.substring(0, this.currentPath.length - 1).lastIndexOf('/'));
+        if (this.currentPath === '') {
+          this.currentPath = '';
+        } else {
+          this.currentPath += '/';
+        }
         this.listFiles();
       }
     }
@@ -175,6 +267,7 @@ export default {
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative; /* 使遮罩层能够正确定位 */
 }
 
 .file-list {
@@ -237,5 +330,26 @@ button:hover {
 
 button:active {
   background-color: #797979;
+}
+
+/* 遮罩层样式 */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 </style>

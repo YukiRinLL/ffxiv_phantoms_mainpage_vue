@@ -202,6 +202,7 @@ export default {
   text-align: left; /* 内容左对齐 */
   max-width: 80%; /* 限制最大宽度，可根据需要调整 */
   margin: 0 auto; /* 水平居中 */
+  word-wrap: break-word; /* 自动换行 */
 }
 
 .date {
