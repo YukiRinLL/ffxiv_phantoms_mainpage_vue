@@ -20,14 +20,10 @@
       </div>
     </div>
     <div class="file-actions">
-      <button>Go Back</button>
-      <button>Upload Files</button>
-      <button>Create Folder</button>
-      <button>Delete Selected</button>
-      <!-- <button @click="goBack">Go Back</button>
+      <button @click="goBack">Go Back</button>
       <button @click="uploadFiles">Upload Files</button>
       <button @click="createFolder">Create Folder</button>
-      <button @click="deleteSelected">Delete Selected</button> -->
+      <button @click="deleteSelected">Delete Selected</button>
     </div>
     <input type="file" ref="fileInput" multiple style="display: none" @change="handleFileChange" />
     <!-- 遮罩层 -->
@@ -276,7 +272,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.file-item {
+.list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -285,33 +281,46 @@ export default {
   cursor: pointer;
 }
 
-.file-item:hover {
+.list-item:hover {
   background-color: #f0f0f0;
 }
 
-.file-info {
+.list-item-info {
   display: flex;
   align-items: center;
+  flex: 1;
+  overflow: hidden;
 }
 
-.file-icon {
-  margin-right: 10px;
-  font-size: 1.2em;
+.list-item-info span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 10px;
 }
 
-.folder-icon {
-  margin-right: 10px;
-  font-size: 1.2em;
+.list-item-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 10px;
+  flex: 1;
+  overflow: hidden;
 }
 
-.file-details {
+.list-item-details span {
   font-size: 0.9em;
   color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.file-actions {
+.list-item-actions {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 button {
