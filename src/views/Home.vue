@@ -99,23 +99,23 @@ export default {
   },
   methods: {
     redirectToMainPage() {
-      const currentUrl = window.location.href;
-      let targetUrl;
+        const currentUrl = window.location.href;
+        let targetUrl;
 
-      if (currentUrl.includes('vercel.app')) {
-        targetUrl = 'ffxiv-phantoms-main-page.vercel.app';
-      } else if (currentUrl.includes('onrender.com')) {
-        targetUrl = 'ffxiv-phantoms-mainpage.onrender.com';
-      } else if (currentUrl.includes('pages.dev')) {
-        targetUrl = 'ffxiv-phantoms-mainpage.pages.dev';
-      } else if (currentUrl.includes('github.io')) {
-        targetUrl = 'yukirinll.github.io/FFXIV_Phantoms_MainPage';
-      } else {
-        targetUrl = 'ffxiv-phantoms-mainpage.onrender.com'; // 默认跳转地址
+        if (currentUrl.includes('vercel.app')) {
+          targetUrl = 'https://ffxiv-phantoms-main-page.vercel.app/';
+        } else if (currentUrl.includes('onrender.com')) {
+          targetUrl = 'https://ffxiv-phantoms-mainpage.onrender.com/';
+        } else if (currentUrl.includes('pages.dev')) {
+          targetUrl = 'https://ffxiv-phantoms-mainpage.pages.dev/';
+        } else if (currentUrl.includes('github.io')) {
+          targetUrl = 'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/';
+        } else {
+          targetUrl = 'https://ffxiv-phantoms-mainpage.onrender.com/'; // 默认跳转地址
+        }
+
+        window.location.href = targetUrl;
       }
-
-      window.location.href = targetUrl;
-    }
   }
 };
 </script>
