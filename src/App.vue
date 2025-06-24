@@ -30,6 +30,24 @@ export default {
     showNav() {
       return !this.$route.meta.hidden;
     }
+  },
+  mounted() {
+    // 添加悬浮窗脚本
+    const script = document.createElement('script');
+    script.src = "https://swzlutsfsivu.ap-southeast-1.clawcloudrun.com/widget.js";
+    script.async = true;
+    script.dataset.hostId = "1";
+    script.dataset.autoReg = "true";
+    script.dataset.loginToken = "";
+    script.dataset.title = "Contact with admin";
+    script.dataset.logo = "https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png";
+    script.dataset.themeColor = "#262626";
+    script.dataset.closeWidth = "48";
+    script.dataset.closeHeight = "48";
+    script.dataset.openWidth = "380";
+    script.dataset.openHeight = "680";
+    script.dataset.welcome = "Thanks for supporting Phantoms FC.";
+    document.body.appendChild(script);
   }
 }
 </script>
@@ -82,5 +100,17 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
   transform: translateY(20px); /* 添加平滑的位移动画 */
+}
+</style>
+
+<style>
+#VOCECHAT_WIDGET {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+  z-index: 9999;
 }
 </style>
