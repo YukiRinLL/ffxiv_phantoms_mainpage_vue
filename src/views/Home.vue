@@ -17,13 +17,13 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
-      <router-link to="/file-management" class="card">
+      <!-- <router-link to="/file-management" class="card">
         <div class="card-icon">
           <i class="xiv file-icon"></i>
         </div>
         <h3>File Management</h3>
         <p>Manage files and folders</p>
-      </router-link>
+      </router-link> -->
 
       <div class="card coming-soon">
         <div class="card-icon">
@@ -63,6 +63,12 @@ export default {
   data() {
     return {
       announcements: [
+        {
+          title: 'FTP 服务器已上线',
+          content: '[Alist服务地址]\n'
+          +'https://svdernbi.ap-southeast-1.clawcloudrun.com/',
+          date: '2025-08-06'
+        },
         {
           title: '部队主页维护完成',
           content: '[目前维护的FC主页地址]\n'
