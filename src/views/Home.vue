@@ -117,7 +117,7 @@ export default {
         } else if (currentUrl.includes('github.io')) {
           targetUrl = 'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/';
         } else {
-          targetUrl = 'https://ffxiv-phantoms-mainpage.onrender.com/'; // 默认跳转地址
+          targetUrl = 'https://phantoms-t65xf0p6.maozi.io/'; // 默认跳转地址
         }
 
         window.location.href = targetUrl;
