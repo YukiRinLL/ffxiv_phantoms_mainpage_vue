@@ -64,10 +64,29 @@ export default {
     return {
       announcements: [
         {
+          title: '远征军招募-部队高难副本开荒志愿填报',
+          content: '有意向参加高难副本开荒/伐木的朋友欢迎登记\n' +
+              '[PC端/手机端页面]\n' +
+              'phantoms-t65xf0p6.maozi.io/expeditionary/editableTable-mobile.html\n' +
+              '[仅PC端页面]\n' +
+              'phantoms-t65xf0p6.maozi.io/expeditionary/editableTable.html\n' +
+              '\n' +
+              '（以上页面可以从部队主页菜单About FC-Expeditionary点击进入）',
+          date: '2025-09-17'
+        },
+        {
           title: 'FTP 服务器已上线',
-          content: '[Alist服务地址]\n'
-          +'https://svdernbi.ap-southeast-1.clawcloudrun.com/',
+          content: '[Alist服务地址1]\n' +
+          'alist-phantom.zeabur.app\n' +
+          '[Alist服务地址2]\n' +
+          'ffoufcyg.jp-members-1.clawcloudrun.com',
           date: '2025-08-06'
+        },
+        {
+          title: '官方账号入驻BiliBili',
+              content: 'ID: PhantomsOfficial\n' +
+                  'space.bilibili.com/3546820598827161\n',
+            date: '2025-09-17'
         },
         {
           title: '部队主页维护完成',
@@ -97,7 +116,8 @@ export default {
         },
         {
           title: '聊天机器人 FFXIVbot 已部署',
-          content: 'FFXIVbot 已部署，TX管控原因Image和hso指令已关闭。部分定制化功能（獭逃、占卜、抽卡）未开放。',
+          content: 'FFXIVbot 已部署，TX管控原因Image和hso指令已关闭。\n' +
+              '部分定制化功能（獭逃、占卜、抽卡）未开放。',
           date: '2022-10-18'
         }
       ]
