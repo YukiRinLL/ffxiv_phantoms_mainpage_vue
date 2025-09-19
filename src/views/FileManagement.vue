@@ -1,6 +1,10 @@
 <template>
   <div class="file-management container">
     <h1>File Management</h1>
+    <div class="unsupported-message" v-if="isUnsupported">
+      <p><strong style="color: red;">此Supabase-S3桶存储已经不再维护，可能导致部分服务不可用</strong></p>
+      <p>请使用Alist服务器：<a href="https://alist-phantom.zeabur.app/" target="_blank" style="color: blue; text-decoration: underline;">alist-phantom.zeabur.app</a></p>
+    </div>
     <div class="file-list">
       <div v-for="item in files" :key="item.name" class="list-item">
         <div class="list-item-info" @click="openItem(item)">
@@ -59,10 +63,14 @@ export default {
       currentPath: '',
       isLoading: false, // 控制遮罩层的显示
       timeoutId: null, // 用于存储超时的定时器ID
+      isUnsupported: true, // 控制提示框的显示
     };
   },
   async created() {
     await this.listFiles();
+  },
+  mounted() {
+    // window.open('https://alist-phantom.zeabur.app/', '_blank');
   },
   methods: {
     async listFiles() {
