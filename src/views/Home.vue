@@ -17,13 +17,13 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
-      <!-- <router-link to="/file-management" class="card">
+      <router-link to="/file-management" class="card">
         <div class="card-icon">
           <i class="xiv file-icon"></i>
         </div>
         <h3>File Management</h3>
         <p>Manage files and folders</p>
-      </router-link> -->
+      </router-link>
 
       <div class="card coming-soon">
         <div class="card-icon">

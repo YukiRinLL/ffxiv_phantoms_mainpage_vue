@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
+import FFXIVMobile from '@/views/FFXIVMobile.vue';
 import FFXIVWeather from '@/views/FFXIVWeather.vue';
 import EmailOperations from '@/views/EmailOperations.vue';
 import UserManagement from '@/views/UserManagement.vue';
@@ -19,6 +20,15 @@ export const routeConfig = [
         meta: {
             title: 'Home',
             icon: 'home'
+        }
+    },
+    {
+        path: '/mobile',
+        name: 'Mobile',
+        component: FFXIVMobile,
+        meta: {
+            title: 'Mobile',
+            icon: 'mobile'
         }
     },
     {
