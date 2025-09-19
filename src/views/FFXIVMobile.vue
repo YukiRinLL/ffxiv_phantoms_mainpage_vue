@@ -3,12 +3,12 @@
     <header>
       <div class="container container_solid">
         <div class="title_wrapper">
-          <h1>Phantoms</h1>
+          <h1>Phantom</h1>
         </div>
       </div>
       <div class="container container_image" aria-hidden="true">
         <div class="title_wrapper">
-          <h1>Phantoms</h1>
+          <h1>Phantom</h1>
         </div>
       </div>
     </header>
@@ -17,7 +17,7 @@
       <h2>基本信息</h2>
       <p>
         <strong>服务器:</strong> 天幕魔导城<br>
-        <strong>部队名称:</strong> Phantoms<br>
+        <strong>部队名称:</strong> Phantom<br>
         <strong>部队后缀:</strong> ＜终焉＞<br>
         <strong>部队规模:</strong> 35人 (上限)<br>
         <strong>语言环境:</strong> 中文 (Chinese)<br>
