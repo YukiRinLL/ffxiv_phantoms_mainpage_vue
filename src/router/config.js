@@ -58,15 +58,15 @@ export const routeConfig = [
     //     }
     // },
 
-    // {
-    //     path: '/file-management',
-    //     name: 'FileManagement',
-    //     component: FileManagement,
-    //     meta: {
-    //         title: 'FileManagement',
-    //         icon: 'file-management'
-    //     }
-    // }
+    {
+        path: '/file-management',
+        name: 'FileManagement',
+        component: FileManagement,
+        meta: {
+            title: 'FileManagement',
+            icon: 'file-management'
+        }
+    }
 ];
 
 const router = createRouter({

@@ -36,7 +36,20 @@
 </template>
 
 <script>
-import { supabase } from '@/lib/supabaseClient';
+import AWS from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
+
+// 配置 AWS SDK
+AWS.config.update({
+  accessKeyId: 'eedaeea4b18bfdb011a22c010f126236',
+  secretAccessKey: 'adb02ad5df1f3df81b9ff69141bf91cc0fd91392da0496ad87f29ee3438dc5f1', //S3 Secret Access Key
+  region: 'ap-southeast-1',
+});
+
+const s3 = new AWS.S3({
+  endpoint: 'https://dshmbsawwrbuycnivcjs.storage.supabase.co/storage/v1/s3',
+  s3ForcePathStyle: true,
+});
 
 export default {
   data() {
@@ -60,26 +73,22 @@ export default {
       }, 5000); // 设置超时时间为5秒
 
       try {
-        const { data, error } = await supabase.storage.from('files').list(this.currentPath, {
-          limit: 100,
-          offset: 0,
-          sortBy: { column: 'name', order: 'asc' }
-        });
+        const params = {
+          Bucket: 'files', // 替换为你的 S3 Bucket 名称
+          Prefix: this.currentPath,
+        };
+
+        const data = await s3.listObjectsV2(params).promise();
         clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
         this.isLoading = false; // 隐藏遮罩层
-        if (error) {
-          console.error('Error fetching files:', error);
-        } else {
-          this.files = data
-            .filter(file => file.name !== '.emptyFolderPlaceholder') // 过滤掉空文件夹占位文件
-            .map(file => ({
-              name: file.name,
-              originalName: this.decodeFileName(file.name),
-              size: file.metadata ? file.metadata.size : null, // 文件大小
-              modified: file.updated_at, // 文件修改日期
-              type: file.metadata ? 'file' : 'folder' // 根据metadata判断是文件还是文件夹
-            }));
-        }
+
+        this.files = data.Contents.map(file => ({
+          name: file.Key,
+          originalName: this.decodeFileName(file.Key),
+          size: file.Size,
+          modified: file.LastModified,
+          type: file.Key.endsWith('/') ? 'folder' : 'file',
+        }));
       } catch (error) {
         this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error fetching files:', error);
@@ -99,10 +108,13 @@ export default {
       try {
         for (const file of files) {
           const processedFileName = this.processFileName(file.name);
-          const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFileName}`, file);
-          if (error) {
-            console.error('Error uploading file:', error);
-          }
+          const params = {
+            Bucket: 'files', // 替换为你的 S3 Bucket 名称
+            Key: `${this.currentPath}${processedFileName}`,
+            Body: file,
+          };
+
+          await s3.upload(params).promise();
         }
         clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
         this.isLoading = false; // 隐藏遮罩层
@@ -114,9 +126,9 @@ export default {
     },
     processFileName(fileName) {
       const cleanedFileName = fileName
-        .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
-        .replace(/\s+/g, '_') // 替换空格为下划线
-        .substring(0, 255); // 控制文件名长度不超过 255 个字符
+          .replace(/[^\w\s.-]/g, '_') // 替换特殊字符为下划线
+          .replace(/\s+/g, '_') // 替换空格为下划线
+          .substring(0, 255); // 控制文件名长度不超过 255 个字符
 
       const extension = fileName.split('.').pop() || '';
       const base64FileName = btoa(unescape(encodeURIComponent(fileName)));
@@ -151,14 +163,16 @@ export default {
         }, 5000); // 设置超时时间为5秒
 
         try {
-          const { error } = await supabase.storage.from('files').upload(`${this.currentPath}${processedFolderName}/`, new Blob());
+          const params = {
+            Bucket: 'files', // 替换为你的 S3 Bucket 名称
+            Key: `${this.currentPath}${processedFolderName}/`,
+            Body: new Buffer(''),
+          };
+
+          await s3.putObject(params).promise();
           clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
           this.isLoading = false; // 隐藏遮罩层
-          if (error) {
-            console.error('Error creating folder:', error);
-          } else {
-            await this.listFiles();
-          }
+          await this.listFiles();
         } catch (error) {
           this.isLoading = false; // 如果请求失败，隐藏遮罩层
           console.error('Error creating folder:', error);
@@ -173,14 +187,15 @@ export default {
       }, 5000); // 设置超时时间为5秒
 
       try {
-        const { error } = await supabase.storage.from('files').remove([`${this.currentPath}${item.name}`]);
+        const params = {
+          Bucket: 'files', // 替换为你的 S3 Bucket 名称
+          Key: `${this.currentPath}${item.name}`,
+        };
+
+        await s3.deleteObject(params).promise();
         clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
         this.isLoading = false; // 隐藏遮罩层
-        if (error) {
-          console.error('Error deleting item:', error);
-        } else {
-          await this.listFiles();
-        }
+        await this.listFiles();
       } catch (error) {
         this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error deleting item:', error);
@@ -194,19 +209,20 @@ export default {
       }, 5000); // 设置超时时间为5秒
 
       try {
-        const { data, error } = await supabase.storage.from('files').download(`${this.currentPath}${encodedName}`);
+        const params = {
+          Bucket: 'files', // 替换为你的 S3 Bucket 名称
+          Key: `${this.currentPath}${encodedName}`,    };
+
+        const data = await s3.getObject(params).promise();
         clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
         this.isLoading = false; // 隐藏遮罩层
-        if (error) {
-          console.error('Error downloading file:', error);
-        } else {
-          const url = URL.createObjectURL(data);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = originalName;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
+
+        const url = URL.createObjectURL(new Blob([data.Body]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = originalName;
+        a.click();
+        URL.revokeObjectURL(url);
       } catch (error) {
         this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error downloading file:', error);
@@ -221,14 +237,17 @@ export default {
       }, 5000); // 设置超时时间为5秒
 
       try {
-        const { error } = await supabase.storage.from('files').remove(selectedPaths);
+        const deleteParams = {
+          Bucket: 'files', // 替换为你的 S3 Bucket 名称
+          Delete: {
+            Objects: selectedPaths.map(path => ({ Key: path })),
+          },
+        };
+
+        await s3.deleteObjects(deleteParams).promise();
         clearTimeout(this.timeoutId); // 如果请求成功，清除超时定时器
         this.isLoading = false; // 隐藏遮罩层
-        if (error) {
-          console.error('Error deleting selected files:', error);
-        } else {
-          await this.listFiles();
-        }
+        await this.listFiles();
       } catch (error) {
         this.isLoading = false; // 如果请求失败，隐藏遮罩层
         console.error('Error deleting selected files:', error);

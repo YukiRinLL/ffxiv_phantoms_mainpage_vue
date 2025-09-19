@@ -34,9 +34,9 @@ export default {
   mounted() {
     // 添加悬浮窗脚本
     const script = document.createElement('script');
-    script.src = "https://swzlutsfsivu.ap-southeast-1.clawcloudrun.com/widget.js";
+    script.src = "https://vocechat.zeabur.app/widget.js";
     script.async = true;
-    script.dataset.hostId = "1";
+    script.dataset.hostId = "2";
     script.dataset.autoReg = "true";
     script.dataset.loginToken = "";
     script.dataset.title = "Contact with admin";
