@@ -4,28 +4,30 @@
       <div class="container container_solid">
         <div class="title_wrapper">
           <h1>Phantom</h1>
+          <h2>FFXIV Mobile Freecompany and Cross-world Linkshell</h2>
         </div>
       </div>
       <div class="container container_image" aria-hidden="true">
         <div class="title_wrapper">
           <h1>Phantom</h1>
+          <h2>FFXIV Mobile Freecompany and Cross-world Linkshell</h2>
         </div>
       </div>
     </header>
     <section>
-      <h1>最终幻想-水晶世界 FC & linkshell</h1>
+      <h1>最终幻想-水晶世界 FC & Linkshell</h1>
       <h2>基本信息</h2>
       <p>
         <strong>服务器:</strong> 天幕魔导城<br>
         <strong>部队名称:</strong> Phantom<br>
-        <strong>部队后缀:</strong> ＜终焉＞<br>
-        <strong>部队规模:</strong> 35人 (上限)<br>
+        <strong>部队后缀:</strong> ＜虚妄＞<br>
+        <strong>部队规模:</strong> 35人 <br>
         <strong>语言环境:</strong> 中文 (Chinese)<br>
         <strong>活跃时间:</strong> 全天 (All day)<br>
-        <strong>联系方式:</strong> QQ:936746977<br>
+        <strong>联系方式:</strong> QQ Group: 936746977<br>
         <strong>申请方式:</strong> 请联系任一管理员<br>
       </p>
-      <h2>About FC/CWLS</h2>
+      <h2>About FC/Linkshell</h2>
       <p>
         <strong>共同运营</strong><br>
         组内讨论氛围良好, 有许多热心的艾欧泽亚冒险者。<br>
@@ -69,6 +71,8 @@ header {
   height: 100vh;
   left: 0;
   width: 100%;
+  /* 确保容器可以扩展到整个屏幕宽度 */
+  min-width: 100%;
 }
 
 .container_solid {
@@ -97,6 +101,7 @@ header {
 .container_solid .title_wrapper h1 {
   background: url("@/assets/images/mobile/1ae282b2f34fba7ebd195852fe07a294_720.png");
   background-size: 100vw auto;
+  background-repeat: no-repeat; /* 添加不重复 */
   background-position: center;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
@@ -105,12 +110,16 @@ header {
 .container_image {
   background-image: url("@/assets/images/mobile/1ae282b2f34fba7ebd195852fe07a294_720.png");
   background-size: 100vw auto;
+  background-repeat: no-repeat; /* 添加不重复 */
   background-position: center;
   background-attachment: fixed;
   top: 100vh;
 }
 
 .container_image .title_wrapper h1 {
+  color: white;
+}
+.container_image .title_wrapper h2 {
   color: white;
 }
 

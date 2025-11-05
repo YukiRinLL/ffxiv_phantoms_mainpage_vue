@@ -17,6 +17,14 @@
         <p>Check weather conditions across Eorzea</p>
       </router-link>
 
+      <router-link to="/mobile" class="card">
+        <div class="card-icon">
+          <i class="xiv file-icon"></i>
+        </div>
+        <h3>FFXIV Mobile</h3>
+        <p>Mobile FC</p>
+      </router-link>
+
       <router-link to="/file-management" class="card">
         <div class="card-icon">
           <i class="xiv file-icon"></i>

@@ -23,15 +23,6 @@ export const routeConfig = [
         }
     },
     {
-        path: '/mobile',
-        name: 'Mobile',
-        component: FFXIVMobile,
-        meta: {
-            title: 'Mobile',
-            icon: 'mobile'
-        }
-    },
-    {
         path: '/weather',
         name: 'Weather',
         component: FFXIVWeather,
@@ -67,7 +58,6 @@ export const routeConfig = [
     //         icon: 'message-management'
     //     }
     // },
-
     {
         path: '/file-management',
         name: 'FileManagement',
@@ -75,6 +65,15 @@ export const routeConfig = [
         meta: {
             title: 'FileManagement',
             icon: 'file-management'
+        }
+    },
+    {
+        path: '/mobile',
+        name: 'Mobile',
+        component: FFXIVMobile,
+        meta: {
+            title: 'Mobile',
+            icon: 'mobile'
         }
     }
 ];
