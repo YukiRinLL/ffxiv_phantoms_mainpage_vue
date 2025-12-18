@@ -1,0 +1,390 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+    height: 100vh; /* 设置body高度为视口高度 */
+    overflow: hidden; /* 隐藏body的滚动条 */
+}
+
+/* 主容器 */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 占据整个视口高度 */
+}
+
+/* 消息容器 - 可滚动区域 */
+.message-container {
+    flex: 1; /* 占据剩余空间 */
+    overflow-y: auto; /* 允许垂直滚动 */
+    background-color: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 固定底部表单区域 */
+.fixed-form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* 防止收缩 */
+}
+
+.message {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+.message:last-child {
+    margin-bottom: 0;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.message-content {
+    flex: 1;
+    font-size: 1.1em;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.timestamp {
+    font-size: 0.9em;
+    color: #888;
+    margin-top: 5px;
+    flex-shrink: 0;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px; /* 防止移动端缩放 */
+}
+
+.form-group button {
+    width: 100%;
+    padding: 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group button:hover {
+    background-color: #555;
+}
+
+.message img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.message .at {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.message .reply {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.user-info {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.user-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.user-info span {
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* 语音消息样式 */
+.audio-message {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    max-width: 300px;
+}
+
+.audio-player {
+    width: 100%;
+}
+
+.audio-player audio {
+    width: 100%;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.audio-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
+.audio-icon {
+    font-size: 1.2em;
+}
+
+.audio-text {
+    color: #666;
+    flex: 1;
+}
+
+.download-btn {
+    padding: 4px 8px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.download-btn:hover {
+    background-color: #218838;
+}
+
+/* JSON 消息样式 */
+.json-message {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    max-width: 300px;
+}
+
+.json-message a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.json-message img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.json-message div {
+    margin-bottom: 4px;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .main-container {
+        height: 100vh;
+    }
+
+    .message-container {
+        padding: 15px;
+    }
+
+    .fixed-form-container {
+        padding: 15px;
+    }
+
+    .message {
+        flex-direction: column;
+        padding: 12px;
+        position: relative;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+
+    .message-content {
+        font-size: 1em;
+        width: 100%;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .timestamp {
+        font-size: 0.75em;
+        margin-left: 0;
+        color: #999;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2px 6px;
+        border-radius: 10px;
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+    }
+
+    /* 移动端头像和用户信息在一行 */
+    .message-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .user-avatar {
+        margin-bottom: 0;
+    }
+
+    .message-content {
+        margin-bottom: 0;
+    }
+
+    .form-group input, .form-group textarea {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message-content {
+        font-size: 0.95em;
+    }
+
+    .timestamp {
+        font-size: 0.7em;
+        bottom: 6px;
+        right: 6px;
+    }
+
+    .audio-message {
+        max-width: 100%;
+    }
+
+    .json-message {
+        max-width: 100%;
+    }
+
+    .fixed-form-container {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .message-container {
+        padding: 10px;
+    }
+
+    .fixed-form-container {
+        padding: 10px;
+    }
+
+    .message {
+        padding: 10px;
+    }
+
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .message-content {
+        font-size: 0.9em;
+    }
+
+    .timestamp {
+        font-size: 0.65em;
+        bottom: 5px;
+        right: 5px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group button {
+        padding: 10px;
+    }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+
+    .message-content {
+        font-size: 0.85em;
+    }
+
+    .timestamp {
+        font-size: 0.6em;
+    }
+
+    .fixed-form-container {
+        padding: 8px;
+    }
+}
+
+/* 自定义滚动条样式 */
+.message-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.message-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.message-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.message-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
