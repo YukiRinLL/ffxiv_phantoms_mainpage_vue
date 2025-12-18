@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
+import Welcome from '@/views/Welcome.vue';
 import FFXIVMobile from '@/views/FFXIVMobile.vue';
 import FFXIVWeather from '@/views/FFXIVWeather.vue';
 import EmailOperations from '@/views/EmailOperations.vue';
@@ -10,7 +11,8 @@ import FileManagement from '@/views/FileManagement.vue';
 export const routeConfig = [
     {
         path: '/',
-        redirect: '/home',
+        name: 'Welcome',
+        component: Welcome,
         meta: { hidden: true }
     },
     {
