@@ -140,16 +140,16 @@ export const routeConfig = [
             icon: 'user-group'
         }
     },
-    // {
-    //     path: '/legacy/profiles',
-    //     name: 'LegacyProfiles',
-    //     component: LegacyView,
-    //     props: { page: 'profiles' },
-    //     meta: {
-    //         title: 'Profiles',
-    //         icon: 'id-card'
-    //     }
-    // },
+    {
+        path: '/legacy/profiles',
+        name: 'LegacyProfiles',
+        component: LegacyView,
+        props: { page: 'profiles' },
+        meta: {
+            title: 'Profiles',
+            icon: 'id-card'
+        }
+    },
     {
         path: '/legacy/visitor-stats',
         name: 'LegacyVisitorStats',

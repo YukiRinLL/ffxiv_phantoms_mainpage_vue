@@ -33,13 +33,69 @@
         <p>Manage files and folders</p>
       </router-link>
 
-      <div class="card coming-soon">
+      <router-link to="/legacy/qqchat" class="card">
         <div class="card-icon">
-          <i class="xiv item-minion-chs"></i>
+          <i class="xiv chat-bubble-chs"></i>
         </div>
-        <h3>More Features Coming</h3>
-        <p>Stay tuned for updates!</p>
-      </div>
+        <h3>QQ Chat</h3>
+        <p>View QQ chat archives</p>
+      </router-link>
+
+      <router-link to="/legacy/recruitment" class="card">
+        <div class="card-icon">
+          <i class="xiv role-tank-chs"></i>
+        </div>
+        <h3>Recruitment</h3>
+        <p>Free company recruitment information</p>
+      </router-link>
+
+      <router-link to="/legacy/editable-table-mobile" class="card">
+        <div class="card-icon">
+          <i class="xiv list-ul-chs"></i>
+        </div>
+        <h3>Editable Table Mobile</h3>
+        <p>Mobile-friendly editable table</p>
+      </router-link>
+
+      <router-link to="/legacy/get-monthly-stats" class="card">
+        <div class="card-icon">
+          <i class="xiv interface-windows-controller-settings-chs"></i>
+        </div>
+        <h3>Monthly Stats</h3>
+        <p>View monthly statistics</p>
+      </router-link>
+
+      <router-link to="/legacy/guild-member-dynamic" class="card">
+        <div class="card-icon">
+          <i class="xiv user-chs"></i>
+        </div>
+        <h3>Guild Member Dynamic</h3>
+        <p>Member activity and updates</p>
+      </router-link>
+
+      <router-link to="/legacy/guild-members" class="card">
+        <div class="card-icon">
+          <i class="xiv group-chs"></i>
+        </div>
+        <h3>Guild Members</h3>
+        <p>Free company member list</p>
+      </router-link>
+
+      <router-link to="/legacy/profiles" class="card">
+        <div class="card-icon">
+          <i class="xiv map-pin-chs"></i>
+        </div>
+        <h3>Profiles</h3>
+        <p>Member profiles and information</p>
+      </router-link>
+
+      <router-link to="/legacy/visitor-stats" class="card">
+        <div class="card-icon">
+          <i class="xiv bar-chart-chs"></i>
+        </div>
+        <h3>Visitor Stats</h3>
+        <p>Website visitor statistics</p>
+      </router-link>
     </div>
 
     <!-- 最新公告 -->
