@@ -55,6 +55,12 @@ export default {
     // 初始设置自动播放
     this.setupVideoAutoPlay();
     
+    // 添加页面可见性变化监听
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    
+    // 添加触摸事件监听，用于移动端播放
+    this.$el.addEventListener('touchstart', this.handleTouchStart, { once: true });
+    
     // 设置每分钟自动重播
     this.replayTimer = setInterval(() => {
       try {
@@ -75,21 +81,46 @@ export default {
     if (this.replayTimer) {
       clearInterval(this.replayTimer);
     }
+    // 移除事件监听器
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.$el.removeEventListener('touchstart', this.handleTouchStart);
   },
   
   methods: {
+    handleVisibilityChange() {
+      if (!document.hidden) {
+        // 页面重新可见时尝试播放视频
+        this.setupVideoAutoPlay();
+      }
+    },
+    
+    handleTouchStart() {
+      // 移动端触摸事件触发时尝试播放视频
+      this.setupVideoAutoPlay();
+    },
     setupVideoAutoPlay() {
       // 获取当前激活的iframe
       const iframe = this.activeFrame === 1 ? this.$refs.videoFrame1 : this.$refs.videoFrame2;
       if (iframe) {
-        // 监听iframe加载完成后发送自动播放指令
-        iframe.onload = () => {
+        // 直接尝试发送播放指令
+        const sendPlayCommand = () => {
           try {
             iframe.contentWindow.postMessage('{"method":"play"}', '*');
           } catch (e) {
             console.log('Video autoplay failed:', e);
           }
         };
+        
+        // 立即尝试播放
+        sendPlayCommand();
+        
+        // 设置iframe加载完成后的播放尝试
+        iframe.onload = sendPlayCommand;
+        
+        // 添加延迟重试机制
+        setTimeout(sendPlayCommand, 500);
+        setTimeout(sendPlayCommand, 1000);
+        setTimeout(sendPlayCommand, 2000);
       }
     },
     redirectToHome() {
