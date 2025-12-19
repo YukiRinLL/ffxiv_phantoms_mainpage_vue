@@ -352,7 +352,7 @@ export default {
   
   .nav-item {
     justify-content: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* border-top: 1px solid rgba(255, 255, 255, 0.1); */
   }
   
   /* 响应式下拉菜单 */
@@ -366,7 +366,7 @@ export default {
   }
   
   .dropdown-menu {
-    position: static;
+    /* position: static; */
     width: 100%;
     border-radius: 0;
     box-shadow: none;

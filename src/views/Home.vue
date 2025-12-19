@@ -327,6 +327,24 @@ export default {
 @media (max-width: 768px) {
   .banner {
     padding: 30px 15px;
+    height: auto;
+    min-height: 200px;
+  }
+
+  .banner h1 {
+    font-size: 1.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .banner p {
+    font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .banner .logo {
+    height: 60px;
   }
 
   .feature-cards {
