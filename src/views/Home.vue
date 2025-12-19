@@ -9,28 +9,12 @@
 
     <!-- 主要功能导航 -->
     <div class="feature-cards">
-      <router-link to="/weather" class="card weather-card">
+      <router-link to="/weather" class="card black-card">
         <div class="card-icon">
           <i class="xiv weather-fair-chs"></i>
         </div>
         <h3>Weather Forecast</h3>
         <p>Check weather conditions across Eorzea</p>
-      </router-link>
-
-      <router-link to="/mobile" class="card">
-        <div class="card-icon">
-          <i class="xiv file-icon"></i>
-        </div>
-        <h3>FFXIV Mobile</h3>
-        <p>Mobile FC</p>
-      </router-link>
-
-      <router-link to="/file-management" class="card">
-        <div class="card-icon">
-          <i class="xiv file-icon"></i>
-        </div>
-        <h3>File Management</h3>
-        <p>Manage files and folders</p>
       </router-link>
 
       <router-link to="/legacy/qqchat" class="card">
@@ -95,6 +79,22 @@
         </div>
         <h3>Visitor Stats</h3>
         <p>Website visitor statistics</p>
+      </router-link>
+
+      <router-link to="/file-management" class="card black-card">
+        <div class="card-icon">
+          <i class="xiv file-icon"></i>
+        </div>
+        <h3>File Management</h3>
+        <p>Manage files and folders</p>
+      </router-link>
+
+      <router-link to="/mobile" class="card black-card">
+        <div class="card-icon">
+          <i class="xiv file-icon"></i>
+        </div>
+        <h3>FFXIV Mobile</h3>
+        <p>Mobile FC</p>
       </router-link>
     </div>
 
@@ -248,7 +248,7 @@ export default {
 }
 
 .card {
-  padding: 25px;
+  padding: 5px;
   border-radius: 8px;
   transition: transform 0.3s ease;
   text-align: center;
@@ -256,7 +256,7 @@ export default {
   text-decoration: none;
 }
 
-.weather-card {
+.black-card {
   background: linear-gradient(135deg, #4f4f4f, #2e2e2e);
   color: white;
 }
