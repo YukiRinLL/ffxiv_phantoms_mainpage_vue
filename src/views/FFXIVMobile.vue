@@ -25,6 +25,11 @@
         <div class="header-divider"></div>
       </div>
       
+      <!-- Logo展示区域 -->
+      <div class="logo-display">
+        <img src="@/assets/images/logo-mobile.png" alt="Phantom Logo" class="main-logo">
+      </div>
+      
       <div class="content-card">
         <div class="card-header">
           <h2>基本信息</h2>
@@ -226,6 +231,38 @@ section {
   border-radius: 2px;
 }
 
+/* Logo展示区域样式 */
+.logo-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.main-logo {
+  width: 100px;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .logo-display {
+    margin: 1.5rem 0;
+    padding: 0.5rem;
+  }
+  
+  .main-logo {
+    width: 150px;
+  }
+}
+
 .content-card {
   background: #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -248,6 +285,8 @@ section {
   border-bottom: 1px solid #eee;
   padding-bottom: 0.75rem;
 }
+
+
 
 .card-header h2 {
   font-size: 1.6em;
