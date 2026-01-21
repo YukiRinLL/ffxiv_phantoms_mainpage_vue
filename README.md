@@ -9,6 +9,8 @@
 
 </div>
 
+![Alt](https://repobeats.axiom.co/api/embed/caba742e454b23e95b70644a2d9ccd6d462aae85.svg "Repobeats analytics image")
+
 ## Please use npm exclusively
 ### Project setup
 ```
