@@ -137,7 +137,7 @@ export default {
     script.dataset.autoReg = "true";
     script.dataset.loginToken = "";
     script.dataset.title = "Contact with admin";
-    script.dataset.logo = "https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png";
+    script.dataset.logo = window.location.origin + '/img/logo-S.jpg';
     script.dataset.themeColor = "#262626";
     script.dataset.closeWidth = "48";
     script.dataset.closeHeight = "48";

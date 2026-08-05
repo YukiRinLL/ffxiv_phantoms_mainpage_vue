@@ -1,8 +1,15 @@
 <template>
   <div class="welcome-container" @click="redirectToHome">
+    <!-- 加载动画遮罩 -->
+    <div class="loading-overlay" v-if="isLoading">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+    </div>
     <div class="video-container">
       <!-- 两个iframe交替使用 -->
-      <iframe 
+      <iframe
         v-if="activeFrame === 1"
         ref="videoFrame1"
         src="//player.bilibili.com/player.html?bvid=BV1T4qhBdE5S&cid=34774060197&autoplay=1&danmaku=0&muted=1&poster=0&controls=0"
@@ -13,7 +20,7 @@
         allowfullscreen="true"
         class="bilibili-video"
       ></iframe>
-      <iframe 
+      <iframe
         v-else
         ref="videoFrame2"
         src="//player.bilibili.com/player.html?bvid=BV1T4qhBdE5S&cid=34774060197&autoplay=1&danmaku=0&muted=1&poster=0&controls=0"
@@ -48,19 +55,20 @@ export default {
     return {
       logoUrl: require('@/assets/images/LOGO-LETTER.png'),
       activeFrame: 1, // 当前激活的iframe
-      replayTimer: null // 定时器
+      replayTimer: null, // 定时器
+      isLoading: true // 加载动画状态
     }
   },
   mounted() {
     // 初始设置自动播放
     this.setupVideoAutoPlay();
-    
+
     // 添加页面可见性变化监听
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    
+
     // 添加触摸事件监听，用于移动端播放
     this.$el.addEventListener('touchstart', this.handleTouchStart, { once: true });
-    
+
     // 设置每分钟自动重播
     this.replayTimer = setInterval(() => {
       try {
@@ -74,6 +82,11 @@ export default {
         console.log('Video replay failed:', e);
       }
     }, 84000); // 60秒
+
+    // 兜底：5秒后强制隐藏加载动画
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 5000);
   },
   
   beforeUnmount() {
@@ -110,13 +123,19 @@ export default {
             console.log('Video autoplay failed:', e);
           }
         };
-        
+
         // 立即尝试播放
         sendPlayCommand();
-        
+
         // 设置iframe加载完成后的播放尝试
-        iframe.onload = sendPlayCommand;
-        
+        iframe.onload = () => {
+          sendPlayCommand();
+          // iframe加载完成后延迟2秒隐藏加载动画（给视频缓冲时间）
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 2000);
+        };
+
         // 添加延迟重试机制
         setTimeout(sendPlayCommand, 500);
         setTimeout(sendPlayCommand, 1000);
@@ -131,6 +150,57 @@ export default {
 </script>
 
 <style scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner-ring {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 2px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .welcome-container {
   position: fixed;
   top: 0;
